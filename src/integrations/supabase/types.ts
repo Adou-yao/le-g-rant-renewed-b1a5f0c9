@@ -136,6 +136,8 @@ export type Database = {
           nom_boutique: string | null
           phone: string | null
           store_name: string | null
+          subscription_end_date: string | null
+          subscription_status: string
           updated_at: string
           user_id: string
         }
@@ -149,6 +151,8 @@ export type Database = {
           nom_boutique?: string | null
           phone?: string | null
           store_name?: string | null
+          subscription_end_date?: string | null
+          subscription_status?: string
           updated_at?: string
           user_id: string
         }
@@ -162,6 +166,8 @@ export type Database = {
           nom_boutique?: string | null
           phone?: string | null
           store_name?: string | null
+          subscription_end_date?: string | null
+          subscription_status?: string
           updated_at?: string
           user_id?: string
         }

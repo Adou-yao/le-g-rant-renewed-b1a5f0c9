@@ -7,11 +7,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useProduits, useAddProduit } from "@/hooks/useProduits";
+import { useSubscription } from "@/hooks/useSubscription";
+import { showReadOnlyAlert } from "@/components/ui/ReadOnlyAlert";
 import { toast } from "sonner";
 
 export default function Articles() {
   const { data: produits = [], isLoading } = useProduits();
   const addProduit = useAddProduit();
+  const { isReadOnly } = useSubscription();
   const [isOpen, setIsOpen] = useState(false);
   const [newProduct, setNewProduct] = useState({ nom: "", prixAchat: "", prixVente: "", stockActuel: "" });
 
@@ -48,9 +51,12 @@ export default function Articles() {
         title="Mes Articles"
         subtitle={`${produits.length} produits • ${totalStock} en stock`}
         action={
-          <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <Dialog open={isOpen} onOpenChange={(open) => {
+            if (open && isReadOnly) { showReadOnlyAlert(); return; }
+            setIsOpen(open);
+          }}>
             <DialogTrigger asChild>
-              <Button size="icon" className="h-10 w-10 rounded-xl bg-success hover:bg-success/90">
+              <Button size="icon" className={`h-10 w-10 rounded-xl ${isReadOnly ? 'bg-muted text-muted-foreground' : 'bg-success hover:bg-success/90'}`}>
                 <Plus className="h-5 w-5" />
               </Button>
             </DialogTrigger>
