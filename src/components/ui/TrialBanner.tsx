@@ -1,4 +1,4 @@
-import { Clock, Crown } from "lucide-react";
+import { Clock, Crown, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface TrialBannerProps {
@@ -15,16 +15,16 @@ export function TrialBanner({ daysLeft, subscriptionStatus }: TrialBannerProps) 
     return (
       <div
         onClick={() => navigate("/abonnement")}
-        className="mx-4 mb-4 p-3 rounded-2xl bg-gradient-to-r from-destructive/10 to-destructive/5 border border-destructive/20 flex items-center gap-3 cursor-pointer active:scale-[0.98] transition-transform"
+        className="mx-5 mb-4 p-4 rounded-2xl glass-strong border-destructive/20 flex items-center gap-3 cursor-pointer active:scale-[0.98] transition-all hover:shadow-lg"
       >
-        <div className="p-2 rounded-xl bg-destructive/10">
+        <div className="p-2.5 rounded-xl bg-destructive/10">
           <Crown className="h-4 w-4 text-destructive" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-destructive">Essai terminé</p>
+          <p className="text-sm font-bold text-destructive">Essai terminé</p>
           <p className="text-xs text-muted-foreground">Abonnez-vous pour continuer</p>
         </div>
-        <span className="text-xs font-bold text-destructive bg-destructive/10 px-3 py-1.5 rounded-full whitespace-nowrap">
+        <span className="text-xs font-bold text-white gradient-primary px-4 py-2 rounded-full whitespace-nowrap shadow-md">
           S'abonner
         </span>
       </div>
@@ -36,16 +36,16 @@ export function TrialBanner({ daysLeft, subscriptionStatus }: TrialBannerProps) 
   return (
     <div
       onClick={() => navigate("/abonnement")}
-      className="mx-4 mb-4 p-3 rounded-2xl bg-gradient-to-r from-warning/10 to-warning/5 border border-warning/20 flex items-center gap-3 cursor-pointer active:scale-[0.98] transition-transform"
+      className="mx-5 mb-4 p-4 rounded-2xl glass-strong flex items-center gap-3 cursor-pointer active:scale-[0.98] transition-all hover:shadow-lg premium-border"
     >
-      <div className="p-2 rounded-xl bg-warning/10">
-        <Clock className="h-4 w-4 text-warning" />
+      <div className="p-2.5 rounded-xl gradient-warm glow-warm">
+        <Sparkles className="h-4 w-4 text-white" />
       </div>
       <p className="text-sm text-foreground flex-1">
-        <span className="font-semibold text-warning">{daysLeft} jour{daysLeft > 1 ? "s" : ""}</span>{" "}
+        <span className="font-bold text-warning">{daysLeft} jour{daysLeft > 1 ? "s" : ""}</span>{" "}
         d'essai restant{daysLeft > 1 ? "s" : ""}
       </p>
-      <span className="text-xs font-bold text-primary bg-primary/10 px-3 py-1.5 rounded-full whitespace-nowrap">
+      <span className="text-xs font-bold text-white gradient-primary px-4 py-2 rounded-full whitespace-nowrap shadow-md">
         Voir les plans
       </span>
     </div>
