@@ -9,15 +9,15 @@ interface PageHeaderProps {
 
 export function PageHeader({ title, subtitle, action, className }: PageHeaderProps) {
   return (
-    <header className={cn("px-4 pt-8 pb-6 safe-top", className)}>
+    <header className={cn("px-5 pt-8 pb-6 safe-top", className)}>
       <div className="flex items-start justify-between gap-4">
-        <div className="space-y-2 animate-fade-in">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-1">
-            <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-            <span className="text-[10px] font-bold text-primary uppercase tracking-wider">Le Gérant</span>
+        <div className="space-y-2 animate-slide-up">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-strong mb-1">
+            <div className="w-1.5 h-1.5 rounded-full gradient-primary animate-pulse" />
+            <span className="text-[10px] font-bold text-primary uppercase tracking-widest">Le Gérant</span>
           </div>
 
-          <h1 className="text-2xl font-bold font-display bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent tracking-tight">
+          <h1 className="text-2xl font-display text-gradient tracking-tight">
             {title}
           </h1>
           {subtitle && (

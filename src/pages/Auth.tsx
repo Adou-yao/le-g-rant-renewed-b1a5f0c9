@@ -61,19 +61,24 @@ export default function Auth() {
   };
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
+    return <div className="min-h-screen flex items-center justify-center gradient-mesh"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-primary/5">
-      <div className="pt-16 pb-10 px-6 text-center animate-fade-in">
+    <div className="min-h-screen flex flex-col gradient-mesh relative overflow-hidden">
+      {/* Decorative orbs */}
+      <div className="absolute top-20 -left-20 w-60 h-60 rounded-full bg-primary/15 blur-3xl animate-float" />
+      <div className="absolute top-40 -right-20 w-48 h-48 rounded-full bg-accent/10 blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+      <div className="absolute bottom-20 left-1/2 w-72 h-72 rounded-full bg-warning/8 blur-3xl animate-float" style={{ animationDelay: '4s' }} />
+
+      <div className="relative pt-20 pb-10 px-6 text-center animate-slide-up">
         <div className="relative inline-flex items-center justify-center w-24 h-24 mb-8">
-          <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-success via-primary to-success opacity-20 blur-xl animate-pulse" />
-          <div className="relative w-24 h-24 rounded-3xl bg-gradient-to-br from-success to-primary shadow-xl flex items-center justify-center transform hover:scale-105 transition-transform duration-300">
-            <Store className="w-12 h-12 text-primary-foreground drop-shadow-lg" />
+          <div className="absolute inset-0 rounded-3xl gradient-hero opacity-30 blur-2xl animate-pulse" />
+          <div className="relative w-24 h-24 rounded-3xl gradient-hero shadow-2xl flex items-center justify-center transform hover:scale-105 transition-transform duration-500 premium-border">
+            <Store className="w-12 h-12 text-white drop-shadow-lg" />
           </div>
         </div>
-        <h1 className="text-4xl font-bold font-display bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent mb-3 tracking-tight">
+        <h1 className="text-4xl font-display text-gradient tracking-tight mb-3">
           Le Gérant
         </h1>
         <p className="text-muted-foreground text-lg max-w-xs mx-auto leading-relaxed">
@@ -81,8 +86,8 @@ export default function Auth() {
         </p>
       </div>
 
-      <div className="flex-1 px-6 pb-8">
-        <div className="card-glass rounded-3xl p-6 animate-fade-in-up">
+      <div className="relative flex-1 px-5 pb-8">
+        <div className="glass-strong rounded-3xl p-6 animate-slide-up" style={{ animationDelay: '150ms' }}>
           {isForgotPassword ? (
             <>
               <button type="button" onClick={() => setIsForgotPassword(false)} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-4 transition-colors">
@@ -95,21 +100,21 @@ export default function Auth() {
                   <Label htmlFor="email" className="text-sm font-medium">Email</Label>
                   <div className="relative">
                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input id="email" type="email" placeholder="vous@exemple.com" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-12 h-14 rounded-2xl border-border/50 bg-background/50 focus:bg-background transition-colors" />
+                    <Input id="email" type="email" placeholder="vous@exemple.com" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-12 h-14 rounded-2xl border-border/50 bg-background/50 focus:bg-background transition-all focus:shadow-lg focus:shadow-primary/10" />
                   </div>
                 </div>
-                <Button type="submit" disabled={isSubmitting} className="w-full h-14 rounded-2xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] bg-primary text-primary-foreground hover:bg-primary/90">
+                <Button type="submit" disabled={isSubmitting} className="w-full h-14 rounded-2xl font-semibold text-lg gradient-primary text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] glow-primary">
                   {isSubmitting ? <Loader2 className="h-5 w-5 animate-spin" /> : <>Envoyer le lien<ArrowRight className="ml-2 h-5 w-5" /></>}
                 </Button>
               </form>
             </>
           ) : (
             <>
-              <div className="flex gap-2 p-1 bg-muted rounded-2xl mb-6">
-                <button type="button" onClick={() => setIsLogin(true)} className={`flex-1 py-3 px-4 rounded-xl font-semibold text-sm transition-all duration-300 ${isLogin ? "bg-primary text-primary-foreground shadow-lg" : "text-muted-foreground hover:text-foreground"}`}>
+              <div className="flex gap-1.5 p-1.5 bg-muted/60 rounded-2xl mb-6">
+                <button type="button" onClick={() => setIsLogin(true)} className={`flex-1 py-3 px-4 rounded-xl font-semibold text-sm transition-all duration-300 ${isLogin ? "gradient-primary text-white shadow-lg glow-primary" : "text-muted-foreground hover:text-foreground"}`}>
                   Connexion
                 </button>
-                <button type="button" onClick={() => setIsLogin(false)} className={`flex-1 py-3 px-4 rounded-xl font-semibold text-sm transition-all duration-300 ${!isLogin ? "bg-primary text-primary-foreground shadow-lg" : "text-muted-foreground hover:text-foreground"}`}>
+                <button type="button" onClick={() => setIsLogin(false)} className={`flex-1 py-3 px-4 rounded-xl font-semibold text-sm transition-all duration-300 ${!isLogin ? "gradient-primary text-white shadow-lg glow-primary" : "text-muted-foreground hover:text-foreground"}`}>
                   Inscription
                 </button>
               </div>
@@ -120,7 +125,7 @@ export default function Auth() {
                     <Label htmlFor="storeName" className="text-sm font-medium">Nom de la boutique</Label>
                     <div className="relative">
                       <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                      <Input id="storeName" type="text" placeholder="Ma Boutique" value={storeName} onChange={(e) => setStoreName(e.target.value)} className="pl-12 h-14 rounded-2xl border-border/50 bg-background/50 focus:bg-background transition-colors" />
+                      <Input id="storeName" type="text" placeholder="Ma Boutique" value={storeName} onChange={(e) => setStoreName(e.target.value)} className="pl-12 h-14 rounded-2xl border-border/50 bg-background/50 focus:bg-background transition-all focus:shadow-lg focus:shadow-primary/10" />
                     </div>
                   </div>
                 )}
@@ -128,7 +133,7 @@ export default function Auth() {
                   <Label htmlFor="email" className="text-sm font-medium">Email</Label>
                   <div className="relative">
                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input id="email" type="email" placeholder="vous@exemple.com" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-12 h-14 rounded-2xl border-border/50 bg-background/50 focus:bg-background transition-colors" />
+                    <Input id="email" type="email" placeholder="vous@exemple.com" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-12 h-14 rounded-2xl border-border/50 bg-background/50 focus:bg-background transition-all focus:shadow-lg focus:shadow-primary/10" />
                   </div>
                 </div>
                 <div className="space-y-2">
@@ -138,10 +143,10 @@ export default function Auth() {
                   </div>
                   <div className="relative">
                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input id="password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} className="pl-12 h-14 rounded-2xl border-border/50 bg-background/50 focus:bg-background transition-colors" />
+                    <Input id="password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} className="pl-12 h-14 rounded-2xl border-border/50 bg-background/50 focus:bg-background transition-all focus:shadow-lg focus:shadow-primary/10" />
                   </div>
                 </div>
-                <Button type="submit" disabled={isSubmitting} className="w-full h-14 rounded-2xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] bg-primary text-primary-foreground hover:bg-primary/90">
+                <Button type="submit" disabled={isSubmitting} className="w-full h-14 rounded-2xl font-semibold text-lg gradient-primary text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] glow-primary">
                   {isSubmitting ? <Loader2 className="h-5 w-5 animate-spin" /> : <>{isLogin ? "Se connecter" : "Créer mon compte"}<ArrowRight className="ml-2 h-5 w-5" /></>}
                 </Button>
               </form>

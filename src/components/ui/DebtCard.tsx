@@ -31,14 +31,14 @@ export function DebtCard({ nomClient, telephone, montant, dateAjout, boutiqueNam
   return (
     <div
       className={cn(
-        "group rounded-2xl p-4 bg-card card-shadow-lg transition-all duration-300 animate-fade-in-up hover:card-shadow-xl hover:translate-y-[-2px]",
+        "group rounded-2xl p-4 glass-strong transition-all duration-300 animate-slide-up hover:shadow-lg hover:translate-y-[-2px]",
         className
       )}
       style={{ animationDelay: `${delay}ms` }}
     >
       <div className="flex items-start gap-4">
-        <div className="flex-shrink-0 w-12 h-12 rounded-full gradient-primary flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110">
-          <User className="h-6 w-6 text-primary-foreground" />
+        <div className="flex-shrink-0 w-12 h-12 rounded-2xl gradient-hero flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-105">
+          <User className="h-6 w-6 text-white" />
         </div>
 
         <div className="flex-1 min-w-0">
@@ -54,7 +54,7 @@ export function DebtCard({ nomClient, telephone, montant, dateAjout, boutiqueNam
                 </p>
               )}
             </div>
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
+            <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground glass px-2 py-1 rounded-full">
               <Calendar className="h-3 w-3" />
               {formatDate(dateAjout)}
             </div>
@@ -62,21 +62,21 @@ export function DebtCard({ nomClient, telephone, montant, dateAjout, boutiqueNam
 
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-baseline gap-1">
-              <span className="text-2xl font-bold font-display text-destructive currency-display">
+              <span className="text-2xl font-display text-destructive currency-display">
                 {new Intl.NumberFormat("fr-CI").format(montant)}
               </span>
-              <span className="text-sm font-medium text-destructive/70">FCFA</span>
+              <span className="text-sm font-medium text-destructive/70">F</span>
             </div>
 
             <div className="flex items-center gap-2">
               {onDelete && (
-                <Button onClick={onDelete} size="sm" variant="ghost" className="text-muted-foreground hover:text-destructive hover:bg-destructive/10">
+                <Button onClick={onDelete} size="sm" variant="ghost" className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl">
                   <Trash2 className="h-4 w-4" />
                 </Button>
               )}
               {telephone && (
-                <Button onClick={handleWhatsAppClick} size="sm" className="gradient-success text-success-foreground gap-2 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-                  <MessageCircle className="h-4 w-4" />
+                <Button onClick={handleWhatsAppClick} size="sm" className="gradient-success text-white gap-1.5 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 rounded-xl">
+                  <MessageCircle className="h-3.5 w-3.5" />
                   Relancer
                 </Button>
               )}
