@@ -15,7 +15,7 @@ export default function Abonnement() {
       name: "Mensuel",
       price: 2500,
       period: "/ mois",
-      planCode: "PLN_ygdm2yeahp1envq",
+      planCode: "PLN_aose5g4tjg9ftra",
       features: [
         "Gestion illimitée des produits",
         "Suivi des ventes en temps réel",
@@ -29,7 +29,7 @@ export default function Abonnement() {
       name: "Annuel",
       price: 22000,
       period: "/ an",
-      planCode: "PLN_tw7hq4fjvr3fg1g",
+      planCode: "PLN_e7jojf3weqcxxz",
       features: [
         "Tout le plan Mensuel",
         "Économisez 8 000 FCFA",
