@@ -1,9 +1,10 @@
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Store, Check, Crown, ArrowLeft, Sparkles } from "lucide-react";
+import { Store, Check, Crown, ArrowLeft, Sparkles, BadgePercent } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { initierPaystackPayment } from "@/lib/paystack";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function Abonnement() {
   const { user } = useAuth();
@@ -12,22 +13,36 @@ export default function Abonnement() {
   const plans = [
     {
       name: "Mensuel",
-      price: 3700,
+      price: 2500,
       period: "/ mois",
-      features: ["Gestion illimitée des produits", "Suivi des ventes en temps réel", "Cahier de dettes", "Statistiques détaillées", "Support WhatsApp"],
+      planCode: "PLN_ygdm2yeahp1envq",
+      features: [
+        "Gestion illimitée des produits",
+        "Suivi des ventes en temps réel",
+        "Cahier de dettes",
+        "Statistiques détaillées",
+        "Support WhatsApp",
+      ],
       popular: false,
     },
     {
-      name: "Trimestriel",
-      price: 9000,
-      period: "/ 3 mois",
-      features: ["Tout le plan Mensuel", "Économisez 2 100 FCFA", "Rapports avancés", "Alertes de stock", "Support prioritaire"],
+      name: "Annuel",
+      price: 22000,
+      period: "/ an",
+      planCode: "PLN_tw7hq4fjvr3fg1g",
+      features: [
+        "Tout le plan Mensuel",
+        "Économisez 8 000 FCFA",
+        "Rapports avancés",
+        "Alertes de stock",
+        "Support prioritaire",
+      ],
       popular: true,
-      savings: "Économie de 19%",
+      savings: "Économie de 8 000 F",
     },
   ];
 
-  const handleSubscribe = (plan: typeof plans[0]) => {
+  const handleSubscribe = async (plan: typeof plans[0]) => {
     if (!user?.email) {
       toast.error("Veuillez vous connecter pour souscrire");
       return;
@@ -36,17 +51,39 @@ export default function Abonnement() {
     initierPaystackPayment({
       amount: plan.price,
       email: user.email,
+      planCode: plan.planCode,
       metadata: {
         plan: plan.name,
-        vendeur_id: user.id
+        vendeur_id: user.id,
       },
-      callback: (response) => {
-        toast.success(`Merci ! Votre abonnement ${plan.name} est en cours de traitement.`);
-        navigate("/");
+      callback: async (response) => {
+        // Update subscription in Supabase
+        const endDate = new Date();
+        if (plan.name === "Annuel") {
+          endDate.setFullYear(endDate.getFullYear() + 1);
+        } else {
+          endDate.setMonth(endDate.getMonth() + 1);
+        }
+
+        const { error } = await supabase
+          .from("profiles")
+          .update({
+            subscription_status: "active",
+            subscription_end_date: endDate.toISOString(),
+          })
+          .eq("user_id", user.id);
+
+        if (error) {
+          console.error("Erreur mise à jour abonnement:", error);
+          toast.error("Paiement reçu mais erreur de mise à jour. Contactez le support.");
+        } else {
+          toast.success(`🎉 Abonnement ${plan.name} activé avec succès !`);
+          navigate("/");
+        }
       },
       onClose: () => {
         toast.info("Paiement annulé");
-      }
+      },
     });
   };
 
@@ -93,18 +130,21 @@ export default function Abonnement() {
             {plan.popular && (
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 inline-flex items-center gap-1 px-4 py-1 rounded-full bg-primary text-primary-foreground text-xs font-bold">
                 <Crown className="h-3 w-3" />
-                Populaire
+                Meilleure offre
               </div>
             )}
 
             <div className="text-center mb-6">
               <h3 className="text-lg font-bold text-foreground mb-2">{plan.name}</h3>
               <div className="flex items-baseline justify-center gap-1">
-                <span className="text-4xl font-bold font-display text-primary">{plan.price.toLocaleString()}</span>
+                <span className="text-4xl font-bold font-display text-primary">
+                  {plan.price.toLocaleString("fr-CI")}
+                </span>
                 <span className="text-muted-foreground text-sm">FCFA {plan.period}</span>
               </div>
               {"savings" in plan && plan.savings && (
-                <span className="inline-block mt-2 text-xs font-semibold text-success bg-success/10 px-3 py-1 rounded-full">
+                <span className="inline-flex items-center gap-1 mt-2 text-xs font-semibold text-success bg-success/10 px-3 py-1 rounded-full">
+                  <BadgePercent className="h-3 w-3" />
                   {plan.savings}
                 </span>
               )}

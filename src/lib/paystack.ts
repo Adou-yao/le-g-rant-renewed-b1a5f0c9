@@ -7,6 +7,7 @@ declare global {
         amount: number;
         currency?: string;
         ref?: string;
+        plan?: string;
         metadata?: Record<string, unknown>;
         callback?: (response: PaystackResponse) => void;
         onClose?: () => void;
@@ -28,20 +29,23 @@ export interface PaystackMetadata {
   produit?: string;
   vendeur_id?: string;
   vente_id?: string;
+  plan?: string;
   [key: string]: unknown;
 }
 
-const PAYSTACK_PUBLIC_KEY = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || "";
+const PAYSTACK_PUBLIC_KEY = "pk_live_b852b02dfe1f593f4907436fbd6c3896dcd663b8";
 
 export function initierPaystackPayment({
   amount,
   email,
+  planCode,
   metadata = {},
   callback,
   onClose,
 }: {
   amount: number;
   email: string;
+  planCode?: string;
   metadata?: PaystackMetadata;
   callback: (response: PaystackResponse) => void;
   onClose?: () => void;
@@ -59,6 +63,7 @@ export function initierPaystackPayment({
     amount: amount * 100,
     currency: "XOF",
     ref: reference,
+    ...(planCode ? { plan: planCode } : {}),
     metadata: {
       ...metadata,
       custom_fields: [

@@ -11,10 +11,13 @@ import { CountryCodeSelect } from "@/components/ui/CountryCodeSelect";
 import { useProduits, useUpdateProduitStock } from "@/hooks/useProduits";
 import { useAddVente, useVentes } from "@/hooks/useVentes";
 import { useAddDette } from "@/hooks/useDettes";
+import { useSubscription } from "@/hooks/useSubscription";
+import { showReadOnlyAlert } from "@/components/ui/ReadOnlyAlert";
 import { toast } from "sonner";
 
 export default function Ventes() {
   const { data: produits = [], isLoading } = useProduits();
+  const { isReadOnly } = useSubscription();
   const { data: ventes = [] } = useVentes();
   const addVente = useAddVente();
   const addDette = useAddDette();
@@ -39,6 +42,7 @@ export default function Ventes() {
   const change = cashReceived ? parseInt(cashReceived) - total : 0;
 
   const handleSale = async () => {
+    if (isReadOnly) { showReadOnlyAlert(); return; }
     if (!produit) { toast.error("Sélectionne un produit"); return; }
     if (produit.stock_actuel < quantity) { toast.error("Stock insuffisant !"); return; }
     if (isCredit && !clientName.trim()) { toast.error("Entre le nom du client pour le crédit"); return; }
@@ -68,7 +72,7 @@ export default function Ventes() {
           {paymentMode === "espece" && (<div className="bg-card rounded-2xl p-4 card-shadow animate-fade-in"><label className="text-sm font-medium text-muted-foreground mb-3 block">Somme reçue</label><Input type="number" placeholder="Ex: 5000" value={cashReceived} onChange={(e) => setCashReceived(e.target.value)} className="text-lg h-12" />{change > 0 && (<div className="mt-3 p-3 bg-success/10 rounded-xl"><p className="text-sm text-muted-foreground">Monnaie à rendre</p><p className="text-2xl font-bold font-display text-success">{new Intl.NumberFormat("fr-CI").format(change)} F</p></div>)}</div>)}
           {paymentMode === "en_ligne" && (<div className="bg-card rounded-2xl p-4 card-shadow animate-fade-in space-y-4"><div className="flex items-center justify-between"><div className="flex items-center gap-3"><div className="p-2 bg-primary/10 rounded-xl"><Percent className="h-5 w-5 text-primary" /></div><Label htmlFor="fees" className="font-medium cursor-pointer">Frais retrait (+1%)</Label></div><Switch id="fees" checked={addFees} onCheckedChange={setAddFees} /></div>{addFees && (<div className="p-3 bg-primary/10 rounded-xl"><p className="text-sm text-muted-foreground">Frais</p><p className="text-lg font-bold font-display text-primary">+{new Intl.NumberFormat("fr-CI").format(fees)} F</p></div>)}</div>)}
           <div className="bg-card rounded-2xl p-4 card-shadow"><div className="flex items-center justify-between"><div className="flex items-center gap-3"><div className="p-2 bg-warning/10 rounded-xl"><User className="h-5 w-5 text-warning" /></div><Label htmlFor="credit" className="font-medium cursor-pointer">C'est un crédit</Label></div><Switch id="credit" checked={isCredit} onCheckedChange={setIsCredit} /></div>{isCredit && (<div className="mt-4 space-y-3 animate-fade-in"><Input placeholder="Nom du client *" value={clientName} onChange={(e) => setClientName(e.target.value)} className="h-12" /><div className="flex"><CountryCodeSelect value={countryCode} onChange={setCountryCode} /><Input type="tel" placeholder="Numéro WhatsApp" value={clientPhone} onChange={(e) => setClientPhone(e.target.value)} className="h-12 rounded-l-none" /></div></div>)}</div>
-          <div className="bg-primary rounded-2xl p-4 text-primary-foreground"><div className="flex items-center justify-between mb-4"><span className="text-sm opacity-80">Total à payer</span><span className="text-3xl font-bold font-display">{new Intl.NumberFormat("fr-CI").format(total)} F</span></div><Button onClick={handleSale} disabled={addVente.isPending} className="w-full h-14 text-lg font-semibold bg-success hover:bg-success/90 text-success-foreground">{addVente.isPending ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <ShoppingCart className="mr-2 h-5 w-5" />}Valider la Vente</Button></div>
+          <div className="bg-primary rounded-2xl p-4 text-primary-foreground"><div className="flex items-center justify-between mb-4"><span className="text-sm opacity-80">Total à payer</span><span className="text-3xl font-bold font-display">{new Intl.NumberFormat("fr-CI").format(total)} F</span></div><Button onClick={handleSale} disabled={addVente.isPending || isReadOnly} className={`w-full h-14 text-lg font-semibold ${isReadOnly ? 'bg-muted text-muted-foreground cursor-not-allowed' : 'bg-success hover:bg-success/90 text-success-foreground'}`}>{addVente.isPending ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <ShoppingCart className="mr-2 h-5 w-5" />}{isReadOnly ? "Essai terminé" : "Valider la Vente"}</Button></div>
         </div>
       )}
     </div>

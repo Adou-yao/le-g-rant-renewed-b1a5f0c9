@@ -5,12 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useDepenses, useAddDepense, useDeleteDepense, CATEGORIES_DEPENSES } from "@/hooks/useDepenses";
+import { useSubscription } from "@/hooks/useSubscription";
+import { showReadOnlyAlert } from "@/components/ui/ReadOnlyAlert";
 import { toast } from "sonner";
 
 const categoryIcons: Record<string, typeof Car> = { Transport: Car, Loyer: Home, Repas: Utensils, Électricité: Zap, Téléphone: Phone, Marchandise: ShoppingBag, Autre: MoreHorizontal };
 
 export default function Depenses() {
   const { data: depenses = [], isLoading } = useDepenses();
+  const { isReadOnly } = useSubscription();
   const addDepense = useAddDepense();
   const deleteDepense = useDeleteDepense();
   const [description, setDescription] = useState("");
@@ -32,7 +35,7 @@ export default function Depenses() {
     <div className="pb-24 animate-fade-in">
       <PageHeader title="Dépenses" subtitle="Suivi des sorties d'argent" />
       <div className="px-4 mb-6"><div className="bg-gradient-to-r from-destructive/10 to-destructive/5 rounded-2xl p-4 border border-destructive/20"><p className="text-sm text-muted-foreground mb-1">Dépenses du jour</p><p className="text-3xl font-bold font-display text-destructive">{new Intl.NumberFormat("fr-CI").format(todayTotal)} F</p></div></div>
-      {!showForm && (<div className="px-4 mb-6"><Button onClick={() => setShowForm(true)} className="w-full h-14 text-lg font-semibold bg-primary hover:bg-primary/90"><Plus className="mr-2 h-5 w-5" />Ajouter une dépense</Button></div>)}
+      {!showForm && (<div className="px-4 mb-6"><Button onClick={() => { if (isReadOnly) { showReadOnlyAlert(); return; } setShowForm(true); }} className={`w-full h-14 text-lg font-semibold ${isReadOnly ? 'bg-muted text-muted-foreground' : 'bg-primary hover:bg-primary/90'}`}><Plus className="mr-2 h-5 w-5" />{isReadOnly ? "Essai terminé" : "Ajouter une dépense"}</Button></div>)}
       {showForm && (<form onSubmit={handleSubmit} className="px-4 mb-6 space-y-4 animate-fade-in"><div className="bg-card rounded-2xl p-4 card-shadow space-y-4"><Input placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} className="h-12" /><Input type="number" placeholder="Montant (FCFA)" value={montant} onChange={(e) => setMontant(e.target.value)} className="h-12" /><Select value={categorie} onValueChange={setCategorie}><SelectTrigger className="h-12"><SelectValue placeholder="Catégorie" /></SelectTrigger><SelectContent>{CATEGORIES_DEPENSES.map((cat) => <SelectItem key={cat} value={cat}>{cat}</SelectItem>)}</SelectContent></Select><div className="flex gap-3"><Button type="button" variant="outline" onClick={() => setShowForm(false)} className="flex-1 h-12">Annuler</Button><Button type="submit" disabled={addDepense.isPending} className="flex-1 h-12 bg-success hover:bg-success/90">{addDepense.isPending ? <Loader2 className="h-5 w-5 animate-spin" /> : "Enregistrer"}</Button></div></div></form>)}
       <div className="px-4 space-y-3">
         {depenses.length === 0 ? (<div className="text-center py-12"><Receipt className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" /><p className="text-muted-foreground">Aucune dépense enregistrée</p></div>) : (

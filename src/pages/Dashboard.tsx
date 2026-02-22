@@ -6,12 +6,15 @@ import { useProduits } from "@/hooks/useProduits";
 import { useVentes } from "@/hooks/useVentes";
 import { useDepenses } from "@/hooks/useDepenses";
 import { useAuth } from "@/hooks/useAuth";
+import { useSubscription } from "@/hooks/useSubscription";
+import { TrialBanner } from "@/components/ui/TrialBanner";
 import { calculateDailyStats, getWeeklySalesData, getLowStockProduits } from "@/lib/statsHelpers";
 import { toast } from "sonner";
 import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
 
 export default function Dashboard() {
   const { signOut, user } = useAuth();
+  const { daysLeft, subscriptionStatus } = useSubscription();
   const { data: produits = [], isLoading: loadingProduits } = useProduits();
   const { data: ventes = [], isLoading: loadingVentes } = useVentes();
   const { data: depenses = [], isLoading: loadingDepenses } = useDepenses();
@@ -48,6 +51,7 @@ export default function Dashboard() {
           <Button variant="ghost" size="icon" onClick={handleSignOut} className="rounded-2xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 mt-2 h-11 w-11"><LogOut className="h-5 w-5" /></Button>
         </div>
       </header>
+      <TrialBanner daysLeft={daysLeft} subscriptionStatus={subscriptionStatus} />
       <div className="px-4 grid grid-cols-2 gap-4 mb-4">
         <StatCard label="Chiffre d'affaires" value={`${new Intl.NumberFormat("fr-CI").format(stats.ventesJour)} F`} icon={TrendingUp} variant="success" delay={0} />
         <StatCard label="Dépenses" value={`${new Intl.NumberFormat("fr-CI").format(depensesJour)} F`} icon={ArrowDownCircle} variant="destructive" delay={100} />
