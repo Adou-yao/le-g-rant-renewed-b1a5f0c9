@@ -43,6 +43,7 @@ export default function Abonnement() {
   ];
 
   const handleSubscribe = async (plan: typeof plans[0]) => {
+    console.log("Ouverture Paystack...", { email: user?.email, plan: plan.name });
     if (!user?.email) {
       toast.error("Veuillez vous connecter pour souscrire");
       return;
