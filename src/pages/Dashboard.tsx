@@ -121,7 +121,7 @@ export default function Dashboard() {
             <div className="p-1.5 rounded-lg bg-primary/10">
               <Smartphone className="h-4 w-4 text-primary" />
             </div>
-            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Sur puces</span>
+            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Sur compte</span>
           </div>
           <p className="text-xl font-display text-foreground currency-display">{new Intl.NumberFormat("fr-CI").format(mobileBalance)} F</p>
         </div>
