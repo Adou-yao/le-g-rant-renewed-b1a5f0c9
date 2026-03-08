@@ -120,15 +120,6 @@ export default function Auth() {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-5">
-                {!isLogin && (
-                  <div className="space-y-2 animate-fade-in">
-                    <Label htmlFor="storeName" className="text-sm font-medium">Nom de la boutique</Label>
-                    <div className="relative">
-                      <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                      <Input id="storeName" type="text" placeholder="Ma Boutique" value={storeName} onChange={(e) => setStoreName(e.target.value)} className="pl-12 h-14 rounded-2xl border-border/50 bg-background/50 focus:bg-background transition-all focus:shadow-lg focus:shadow-primary/10" />
-                    </div>
-                  </div>
-                )}
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-sm font-medium">Email</Label>
                   <div className="relative">
