@@ -31,6 +31,7 @@ interface ShopFormModalProps {
 export function ShopFormModal({ open, onOpenChange, onSubmit, isSubmitting, editShop }: ShopFormModalProps) {
   const [nom, setNom] = useState("");
   const [localisation, setLocalisation] = useState("");
+  const [countryCode, setCountryCode] = useState("+225");
   const [whatsapp, setWhatsapp] = useState("");
   const [typeCommerce, setTypeCommerce] = useState("Autre");
   const [logoFile, setLogoFile] = useState<File | null>(null);
