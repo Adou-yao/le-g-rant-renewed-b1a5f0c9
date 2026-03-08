@@ -30,6 +30,7 @@ import {
   ShieldCheck,
   Clock,
   PackagePlus,
+  Plus,
 } from "lucide-react";
 import { ReapprovisionnementModal } from "@/components/ReapprovisionnementModal";
 import { CreateProductModal } from "@/components/CreateProductModal";
