@@ -244,6 +244,54 @@ export default function DashboardSuperviseur() {
         <SupervisionBadge />
       </div>
 
+      {/* Stock Disputes Alert */}
+      {rejectedTransfers.length > 0 && (
+        <Alert variant="destructive" className="border-destructive/50 bg-destructive/10">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle className="flex items-center gap-2">
+            Litiges de Stock
+            <Badge variant="destructive" className="text-xs">
+              {rejectedTransfers.length}
+            </Badge>
+          </AlertTitle>
+          <AlertDescription className="mt-2 space-y-3">
+            {rejectedTransfers.map((t) => {
+              const produit = allProduits.find((p) => p.id === t.produit_id);
+              const manager = managers.find((m) => m.manager_id === t.manager_id);
+              const shop = shops.find((s) => s.id === t.shop_id);
+              return (
+                <div
+                  key={t.id}
+                  className="p-3 rounded-lg bg-background border border-destructive/30"
+                >
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                      <p className="text-sm font-medium text-foreground">
+                        {produit?.nom || "Produit inconnu"} — {t.quantite} unités
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {shop?.nom || "Boutique"} • {manager?.manager_name || "Gérant"} • {new Date(t.updated_at).toLocaleDateString("fr-CI")}
+                      </p>
+                    </div>
+                    <Badge variant="outline" className="text-xs border-destructive text-destructive shrink-0">
+                      Refusé
+                    </Badge>
+                  </div>
+                  <div className="mt-2 p-2 rounded bg-destructive/5 border border-destructive/20">
+                    <p className="text-xs text-foreground">
+                      <span className="font-medium">Motif :</span> {t.rejection_reason || "Aucun motif fourni"}
+                    </p>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2 italic">
+                    → Créez un nouveau bon de livraison avec les informations correctes.
+                  </p>
+                </div>
+              );
+            })}
+          </AlertDescription>
+        </Alert>
+      )}
+
       {/* Tabs */}
       <Tabs defaultValue="overview" className="w-full">
         <TabsList className="w-full grid grid-cols-2">
