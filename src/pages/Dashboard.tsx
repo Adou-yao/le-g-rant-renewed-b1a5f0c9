@@ -43,7 +43,7 @@ export default function Dashboard() {
     );
   }
 
-  const handleSignOut = async () => { const { error } = await signOut(); if (error) toast.error("Erreur lors de la déconnexion"); else toast.success("Déconnexion réussie"); };
+  
   const storeName = user?.user_metadata?.nom_boutique || "Ma Boutique";
 
   return (
@@ -64,14 +64,6 @@ export default function Dashboard() {
               Tableau de bord en temps réel
             </p>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleSignOut}
-            className="rounded-2xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 mt-2 h-11 w-11 glass"
-          >
-            <LogOut className="h-5 w-5" />
-          </Button>
         </div>
       </header>
 
