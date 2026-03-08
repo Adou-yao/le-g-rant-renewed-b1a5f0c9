@@ -237,23 +237,24 @@ export default function DashboardSuperviseur() {
           </Select>
         </div>
         <SupervisionBadge />
+      </div>
 
-        {/* Tabs */}
-        <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="w-full grid grid-cols-2">
-            <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
-            <TabsTrigger value="inventaires">Rapports d'Inventaire</TabsTrigger>
-          </TabsList>
+      {/* Tabs */}
+      <Tabs defaultValue="overview" className="w-full">
+        <TabsList className="w-full grid grid-cols-2">
+          <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
+          <TabsTrigger value="inventaires">Rapports d'Inventaire</TabsTrigger>
+        </TabsList>
 
-          <TabsContent value="inventaires" className="mt-4">
-            <InventaireReports
-              managers={managers}
-              shops={shops}
-              produits={allProduits}
-            />
-          </TabsContent>
+        <TabsContent value="inventaires" className="mt-4">
+          <InventaireReports
+            managers={managers}
+            shops={shops}
+            produits={allProduits}
+          />
+        </TabsContent>
 
-          <TabsContent value="overview" className="mt-4 space-y-6">
+        <TabsContent value="overview" className="mt-4 space-y-6">
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <StatCard
