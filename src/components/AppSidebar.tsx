@@ -25,6 +25,7 @@ const gerantNavItems = [
   { icon: BookOpen, label: "Dettes", path: "/dettes" },
   { icon: Wallet, label: "Dépenses", path: "/depenses" },
   { icon: BarChart3, label: "Statistiques", path: "/stats" },
+  { icon: ClipboardCheck, label: "Inventaire", path: "/faire-inventaire" },
 ];
 
 const proprietaireNavItems = [

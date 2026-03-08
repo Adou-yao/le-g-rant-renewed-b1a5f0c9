@@ -13,7 +13,7 @@ const gerantItems: NavItem[] = [
   { icon: Home, label: "Accueil", path: "/" },
   { icon: ShoppingCart, label: "Vendre", path: "/ventes" },
   { icon: Package, label: "Articles", path: "/articles" },
-  { icon: Wallet, label: "Dépenses", path: "/depenses" },
+  { icon: ClipboardCheck, label: "Inventaire", path: "/faire-inventaire" },
   { icon: BookOpen, label: "Dettes", path: "/dettes" },
 ];
 
