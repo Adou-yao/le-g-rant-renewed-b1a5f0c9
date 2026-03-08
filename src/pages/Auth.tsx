@@ -53,7 +53,7 @@ export default function Auth() {
         if (error) toast.error(error.message.includes("Invalid login credentials") ? "Email ou mot de passe incorrect" : error.message);
         else toast.success("Connexion réussie !");
       } else {
-        const { error } = await signUp(email, password, storeName);
+        const { error } = await signUp(email, password);
         if (error) toast.error(error.message.includes("already registered") ? "Cet email est déjà utilisé" : error.message);
         else { toast.success("Un code de vérification a été envoyé à votre email"); navigate("/verify", { state: { email } }); }
       }
