@@ -15,6 +15,7 @@ export interface StockTransfer {
   created_at: string;
   confirmed_at: string | null;
   updated_at: string;
+  rejection_reason: string | null;
 }
 
 export function useOwnerTransfers() {
@@ -92,5 +93,41 @@ export function useConfirmTransfer() {
       queryClient.invalidateQueries({ queryKey: ["produits"] });
       queryClient.invalidateQueries({ queryKey: ["stock-transfers-owner"] });
     },
+  });
+}
+
+export function useRejectTransfer() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ transferId, reason }: { transferId: string; reason: string }) => {
+      const { error } = await supabase.rpc("reject_stock_transfer", {
+        transfer_id: transferId,
+        reason,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["stock-transfers-manager-pending"] });
+      queryClient.invalidateQueries({ queryKey: ["stock-transfers-owner"] });
+      queryClient.invalidateQueries({ queryKey: ["stock-transfers-rejected"] });
+    },
+  });
+}
+
+export function useRejectedTransfers() {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ["stock-transfers-rejected", user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("stock_transfers")
+        .select("*")
+        .eq("owner_id", user!.id)
+        .eq("statut", "refusé")
+        .order("updated_at", { ascending: false });
+      if (error) throw error;
+      return data as StockTransfer[];
+    },
+    enabled: !!user,
   });
 }

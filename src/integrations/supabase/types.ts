@@ -410,6 +410,7 @@ export type Database = {
           owner_id: string
           produit_id: string
           quantite: number
+          rejection_reason: string | null
           shop_id: string
           source: string
           statut: string
@@ -424,6 +425,7 @@ export type Database = {
           owner_id: string
           produit_id: string
           quantite: number
+          rejection_reason?: string | null
           shop_id: string
           source?: string
           statut?: string
@@ -438,6 +440,7 @@ export type Database = {
           owner_id?: string
           produit_id?: string
           quantite?: number
+          rejection_reason?: string | null
           shop_id?: string
           source?: string
           statut?: string
@@ -552,6 +555,10 @@ export type Database = {
         Returns: string
       }
       has_admin_role: { Args: { _user_id: string }; Returns: boolean }
+      reject_stock_transfer: {
+        Args: { reason: string; transfer_id: string }
+        Returns: undefined
+      }
       user_owns_resource: {
         Args: { resource_user_id: string }
         Returns: boolean
