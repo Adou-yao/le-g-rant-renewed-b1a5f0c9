@@ -52,7 +52,11 @@ export function ManagerFormModal({ open, onOpenChange, onSubmit, isSubmitting, s
     e.preventDefault();
     const result = await onSubmit({
       full_name: fullName.trim(),
-      whatsapp: whatsapp.trim() ? `${countryCode}${whatsapp.trim().replace(/^0+/, "")}` : "",
+      whatsapp: whatsapp.trim() ? `${countryCode}${whatsapp.trim()}` : "",
+      email: email.trim().toLowerCase(),
+      password,
+      shop_id: shopId,
+    });
       email: email.trim().toLowerCase(),
       password,
       shop_id: shopId,
