@@ -45,7 +45,7 @@ export function PendingDeliveries() {
             <div className="min-w-0 flex-1">
               <p className="text-sm font-medium truncate">{getProduitName(t.produit_id)}</p>
               <p className="text-xs text-muted-foreground">
-                +{t.quantite} unités • {new Date(t.created_at).toLocaleDateString("fr-CI")}
+                +{t.quantite} unités • {t.source === 'initial' ? 'Stock initial' : 'Réappro.'} • {new Date(t.created_at).toLocaleDateString("fr-CI")}
               </p>
               {t.nouveau_prix_achat && (
                 <p className="text-xs text-primary mt-0.5">

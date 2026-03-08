@@ -411,6 +411,7 @@ export type Database = {
           produit_id: string
           quantite: number
           shop_id: string
+          source: string
           statut: string
           updated_at: string
         }
@@ -424,6 +425,7 @@ export type Database = {
           produit_id: string
           quantite: number
           shop_id: string
+          source?: string
           statut?: string
           updated_at?: string
         }
@@ -437,6 +439,7 @@ export type Database = {
           produit_id?: string
           quantite?: number
           shop_id?: string
+          source?: string
           statut?: string
           updated_at?: string
         }

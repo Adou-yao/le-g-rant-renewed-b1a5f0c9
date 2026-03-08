@@ -11,6 +11,7 @@ export interface StockTransfer {
   quantite: number;
   nouveau_prix_achat: number | null;
   statut: string;
+  source: string;
   created_at: string;
   confirmed_at: string | null;
   updated_at: string;
@@ -61,6 +62,7 @@ export function useCreateTransfer() {
       shop_id: string;
       quantite: number;
       nouveau_prix_achat?: number | null;
+      source?: string;
     }) => {
       const { data, error } = await supabase
         .from("stock_transfers")
