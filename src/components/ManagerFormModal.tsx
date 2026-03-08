@@ -141,7 +141,10 @@ export function ManagerFormModal({ open, onOpenChange, onSubmit, isSubmitting, s
           </div>
           <div className="space-y-2">
             <Label htmlFor="mgr-wa">Numéro WhatsApp</Label>
-            <Input id="mgr-wa" type="tel" placeholder="Ex: +225 07 00 00 00 00" value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} maxLength={20} />
+            <div className="flex">
+              <CountryCodeSelect value={countryCode} onChange={setCountryCode} />
+              <Input id="mgr-wa" type="tel" placeholder="07 00 00 00 00" value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} className="rounded-l-none h-12" maxLength={15} />
+            </div>
           </div>
           <div className="space-y-2">
             <Label htmlFor="mgr-email">Email de connexion</Label>
