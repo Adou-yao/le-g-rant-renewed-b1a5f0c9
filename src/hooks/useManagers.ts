@@ -44,7 +44,20 @@ export function useManagers() {
       const { data, error } = await supabase.functions.invoke("create-manager", {
         body: payload,
       });
-      if (error) throw error;
+      if (error) {
+        let msg = "Erreur lors de la création du gérant";
+        try {
+          if (error.context && typeof error.context === "object" && "json" in error.context) {
+            const body = await (error.context as Response).json();
+            msg = body?.error || msg;
+          } else {
+            msg = error.message || msg;
+          }
+        } catch {
+          /* use default msg */
+        }
+        throw new Error(msg);
+      }
       if (data?.error) throw new Error(data.error);
       return data;
     },
