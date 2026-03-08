@@ -42,13 +42,23 @@ export function ShopFormModal({ open, onOpenChange, onSubmit, isSubmitting, edit
     if (editShop) {
       setNom(editShop.nom);
       setLocalisation(editShop.localisation);
-      setWhatsapp(editShop.whatsapp);
+      // Parse existing whatsapp to extract country code
+      const existingWa = editShop.whatsapp || "";
+      const matchedCode = ["+225","+223","+226","+228","+229","+221","+224","+227","+233","+234","+237","+241","+242","+243","+33","+1"].find(c => existingWa.startsWith(c));
+      if (matchedCode) {
+        setCountryCode(matchedCode);
+        setWhatsapp(existingWa.slice(matchedCode.length));
+      } else {
+        setCountryCode("+225");
+        setWhatsapp(existingWa);
+      }
       setTypeCommerce(editShop.type_commerce);
       setLogoPreview(editShop.logo_url || null);
       setLogoFile(null);
     } else {
       setNom("");
       setLocalisation("");
+      setCountryCode("+225");
       setWhatsapp("");
       setTypeCommerce("Autre");
       setLogoPreview(null);
