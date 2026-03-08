@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppLayout } from "@/components/AppLayout";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { RoleProtectedRoute } from "@/components/RoleProtectedRoute";
+import { GerantOnlyRoute } from "@/components/GerantOnlyRoute";
 import Index from "./pages/Index";
 import Ventes from "./pages/Ventes";
 import Articles from "./pages/Articles";
@@ -15,6 +16,7 @@ import Stats from "./pages/Stats";
 import Auth from "./pages/Auth";
 import Abonnement from "./pages/Abonnement";
 import DashboardProprietaire from "./pages/DashboardProprietaire";
+import DashboardSuperviseur from "./pages/DashboardSuperviseur";
 import ChangementObligatoire from "./pages/ChangementObligatoire";
 import NotFound from "./pages/NotFound";
 import VerifyEmail from "./pages/VerifyEmail";
@@ -30,14 +32,17 @@ const App = () => (
         <Routes>
           <Route path="/auth" element={<Auth />} />
           <Route path="/verify" element={<VerifyEmail />} />
-          <Route path="/" element={<ProtectedRoute><AppLayout><Index /></AppLayout></ProtectedRoute>} />
-          <Route path="/ventes" element={<ProtectedRoute><AppLayout><Ventes /></AppLayout></ProtectedRoute>} />
-          <Route path="/articles" element={<ProtectedRoute><AppLayout><Articles /></AppLayout></ProtectedRoute>} />
-          <Route path="/dettes" element={<ProtectedRoute><AppLayout><Dettes /></AppLayout></ProtectedRoute>} />
-          <Route path="/depenses" element={<ProtectedRoute><AppLayout><Depenses /></AppLayout></ProtectedRoute>} />
-          <Route path="/stats" element={<ProtectedRoute><AppLayout><Stats /></AppLayout></ProtectedRoute>} />
+          {/* Operational pages - gérant only */}
+          <Route path="/" element={<GerantOnlyRoute><AppLayout><Index /></AppLayout></GerantOnlyRoute>} />
+          <Route path="/ventes" element={<GerantOnlyRoute><AppLayout><Ventes /></AppLayout></GerantOnlyRoute>} />
+          <Route path="/articles" element={<GerantOnlyRoute><AppLayout><Articles /></AppLayout></GerantOnlyRoute>} />
+          <Route path="/dettes" element={<GerantOnlyRoute><AppLayout><Dettes /></AppLayout></GerantOnlyRoute>} />
+          <Route path="/depenses" element={<GerantOnlyRoute><AppLayout><Depenses /></AppLayout></GerantOnlyRoute>} />
+          <Route path="/stats" element={<GerantOnlyRoute><AppLayout><Stats /></AppLayout></GerantOnlyRoute>} />
+          {/* Proprietaire only */}
           <Route path="/abonnement" element={<RoleProtectedRoute allowedRoles={["proprietaire"]}><AppLayout><Abonnement /></AppLayout></RoleProtectedRoute>} />
           <Route path="/dashboard-proprietaire" element={<RoleProtectedRoute allowedRoles={["proprietaire"]}><AppLayout><DashboardProprietaire /></AppLayout></RoleProtectedRoute>} />
+          <Route path="/dashboard-superviseur" element={<RoleProtectedRoute allowedRoles={["proprietaire"]}><AppLayout><DashboardSuperviseur /></AppLayout></RoleProtectedRoute>} />
           <Route path="/changement-obligatoire" element={<ProtectedRoute><ChangementObligatoire /></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>

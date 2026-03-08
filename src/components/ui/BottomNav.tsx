@@ -1,6 +1,7 @@
-import { Home, ShoppingCart, Package, BookOpen, Wallet, LucideIcon } from "lucide-react";
+import { Home, ShoppingCart, Package, BookOpen, Wallet, LayoutDashboard, Network, CreditCard, LucideIcon } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { useUserRole } from "@/hooks/useUserRole";
 
 interface NavItem {
   icon: LucideIcon;
@@ -8,7 +9,7 @@ interface NavItem {
   path: string;
 }
 
-const navItems: NavItem[] = [
+const gerantItems: NavItem[] = [
   { icon: Home, label: "Accueil", path: "/" },
   { icon: ShoppingCart, label: "Vendre", path: "/ventes" },
   { icon: Package, label: "Articles", path: "/articles" },
@@ -16,13 +17,21 @@ const navItems: NavItem[] = [
   { icon: BookOpen, label: "Dettes", path: "/dettes" },
 ];
 
+const proprietaireItems: NavItem[] = [
+  { icon: LayoutDashboard, label: "Supervision", path: "/dashboard-superviseur" },
+  { icon: Network, label: "Réseau", path: "/dashboard-proprietaire" },
+  { icon: CreditCard, label: "Abonnement", path: "/abonnement" },
+];
+
 export function BottomNav() {
   const location = useLocation();
+  const { isProprietaire } = useUserRole();
+
+  const navItems = isProprietaire ? proprietaireItems : gerantItems;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 safe-bottom px-3 pb-2">
       <div className="relative glass-strong rounded-2xl overflow-hidden">
-        {/* Top accent line */}
         <div className="absolute top-0 left-4 right-4 h-[2px] bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
 
         <div className="relative flex items-center justify-around px-1 py-1.5">
