@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 export default function Dashboard() {
   const { signOut, user } = useAuth();
   const { daysLeft, subscriptionStatus } = useSubscription();
+  const { isProprietaire } = useUserRole();
   const { data: produits = [], isLoading: loadingProduits } = useProduits();
   const { data: ventes = [], isLoading: loadingVentes } = useVentes();
   const { data: depenses = [], isLoading: loadingDepenses } = useDepenses();
