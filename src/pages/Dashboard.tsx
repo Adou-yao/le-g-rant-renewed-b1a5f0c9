@@ -7,7 +7,9 @@ import { useVentes } from "@/hooks/useVentes";
 import { useDepenses } from "@/hooks/useDepenses";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
+import { useUserRole } from "@/hooks/useUserRole";
 import { TrialBanner } from "@/components/ui/TrialBanner";
+import { SupervisionBadge } from "@/components/ui/SupervisionBadge";
 import { calculateDailyStats, getWeeklySalesData, getLowStockProduits } from "@/lib/statsHelpers";
 import { toast } from "sonner";
 import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
@@ -16,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 export default function Dashboard() {
   const { signOut, user } = useAuth();
   const { daysLeft, subscriptionStatus } = useSubscription();
+  const { isProprietaire } = useUserRole();
   const { data: produits = [], isLoading: loadingProduits } = useProduits();
   const { data: ventes = [], isLoading: loadingVentes } = useVentes();
   const { data: depenses = [], isLoading: loadingDepenses } = useDepenses();
@@ -68,6 +71,7 @@ export default function Dashboard() {
       </header>
 
       <TrialBanner daysLeft={daysLeft} subscriptionStatus={subscriptionStatus} />
+      {isProprietaire && <div className="px-1"><SupervisionBadge /></div>}
 
       {/* Hero Benefit Card */}
       <div className="px-5 mb-5 animate-slide-up" style={{ animationDelay: '100ms' }}>
