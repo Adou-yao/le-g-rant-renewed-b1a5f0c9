@@ -4,12 +4,15 @@ import { StatCard } from "@/components/ui/StatCard";
 import { useProduits } from "@/hooks/useProduits";
 import { useVentes } from "@/hooks/useVentes";
 import { useDettes } from "@/hooks/useDettes";
+import { useUserRole } from "@/hooks/useUserRole";
+import { SupervisionBadge } from "@/components/ui/SupervisionBadge";
 import { ShoppingBag, Users, TrendingUp, Wallet, Package, Target, Loader2 } from "lucide-react";
 
 export default function Stats() {
   const { data: produits = [], isLoading: loadingProduits } = useProduits();
   const { data: ventes = [], isLoading: loadingVentes } = useVentes();
   const { data: dettes = [], isLoading: loadingDettes } = useDettes();
+  const { isProprietaire } = useUserRole();
   const isLoading = loadingProduits || loadingVentes || loadingDettes;
 
   const stats = useMemo(() => {
@@ -37,6 +40,7 @@ export default function Stats() {
   return (
     <div className="pb-24 animate-fade-in">
       <PageHeader title="Statistiques" subtitle="Votre rapport de performance complet" />
+      {isProprietaire && <SupervisionBadge />}
 
       <div className="px-4 grid grid-cols-2 gap-3 mb-6">
         <StatCard label="Ventes totales" value={stats.totalVentes} icon={ShoppingBag} variant="success" delay={0} />

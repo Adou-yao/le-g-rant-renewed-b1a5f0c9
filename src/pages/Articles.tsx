@@ -8,13 +8,16 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useProduits, useAddProduit } from "@/hooks/useProduits";
 import { useSubscription } from "@/hooks/useSubscription";
+import { useUserRole } from "@/hooks/useUserRole";
 import { showReadOnlyAlert } from "@/components/ui/ReadOnlyAlert";
+import { SupervisionBadge } from "@/components/ui/SupervisionBadge";
 import { toast } from "sonner";
 
 export default function Articles() {
   const { data: produits = [], isLoading } = useProduits();
   const addProduit = useAddProduit();
   const { isReadOnly } = useSubscription();
+  const { isProprietaire } = useUserRole();
   const [isOpen, setIsOpen] = useState(false);
   const [newProduct, setNewProduct] = useState({ nom: "", prixAchat: "", prixVente: "", stockActuel: "" });
 
@@ -82,10 +85,16 @@ export default function Articles() {
                     <Input id="prixVente" type="number" placeholder="4500" value={newProduct.prixVente} onChange={(e) => setNewProduct({ ...newProduct, prixVente: e.target.value })} className="mt-1.5" />
                   </div>
                 </div>
-                <div>
-                  <Label htmlFor="stock">Stock initial</Label>
-                  <Input id="stock" type="number" placeholder="10" value={newProduct.stockActuel} onChange={(e) => setNewProduct({ ...newProduct, stockActuel: e.target.value })} className="mt-1.5" />
-                </div>
+                {isProprietaire ? (
+                  <div className="p-3 rounded-xl bg-primary/10 border border-primary/20">
+                    <p className="text-xs text-primary font-medium">🔒 Le stock initial sera défini par le gérant ou via un réapprovisionnement.</p>
+                  </div>
+                ) : (
+                  <div>
+                    <Label htmlFor="stock">Stock initial</Label>
+                    <Input id="stock" type="number" placeholder="10" value={newProduct.stockActuel} onChange={(e) => setNewProduct({ ...newProduct, stockActuel: e.target.value })} className="mt-1.5" />
+                  </div>
+                )}
                 <Button onClick={handleAddProduct} disabled={addProduit.isPending} className="w-full h-12 bg-success hover:bg-success/90 text-success-foreground">
                   {addProduit.isPending ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
                   Ajouter le produit
@@ -95,6 +104,8 @@ export default function Articles() {
           </Dialog>
         }
       />
+
+      {isProprietaire && <SupervisionBadge />}
 
       <div className="px-4 mb-5">
         <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-2xl p-5">
