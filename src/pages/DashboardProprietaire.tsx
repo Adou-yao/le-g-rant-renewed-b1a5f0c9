@@ -2,16 +2,22 @@ import { useState } from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Store, Users, Plus, MapPin, Phone, Tag, Settings, Pencil } from "lucide-react";
+import { Store, Users, Plus, MapPin, Phone, Tag, Settings, Pencil, UserX, UserCheck } from "lucide-react";
 import { useShops } from "@/hooks/useShops";
+import { useManagers } from "@/hooks/useManagers";
 import { ShopFormModal } from "@/components/ShopFormModal";
+import { ManagerFormModal } from "@/components/ManagerFormModal";
 import type { Shop } from "@/hooks/useShops";
 import { toast } from "sonner";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 
 export default function DashboardProprietaire() {
   const { shops, isLoading, addShop, updateShop } = useShops();
+  const { managers, isLoading: managersLoading, createManager, toggleManagerActive } = useManagers();
   const [modalOpen, setModalOpen] = useState(false);
   const [editingShop, setEditingShop] = useState<Shop | null>(null);
+  const [managerModalOpen, setManagerModalOpen] = useState(false);
 
   const handleSubmit = async (data: { nom: string; localisation: string; whatsapp: string; type_commerce: string; logoFile?: File | null }) => {
     try {
@@ -30,6 +36,26 @@ export default function DashboardProprietaire() {
     }
   };
 
+  const handleCreateManager = async (data: { full_name: string; whatsapp: string; email: string; password: string; shop_id: string }) => {
+    try {
+      const result = await createManager.mutateAsync(data);
+      toast.success(`Gérant ${data.full_name} créé avec succès !`);
+      return result;
+    } catch (err: any) {
+      toast.error(err.message || "Erreur lors de la création du gérant.");
+      throw err;
+    }
+  };
+
+  const handleToggleActive = async (id: string, currentActive: boolean) => {
+    try {
+      await toggleManagerActive.mutateAsync({ id, is_active: !currentActive });
+      toast.success(currentActive ? "Accès désactivé." : "Accès réactivé.");
+    } catch {
+      toast.error("Erreur lors de la mise à jour.");
+    }
+  };
+
   const openEdit = (shop: Shop) => {
     setEditingShop(shop);
     setModalOpen(true);
@@ -38,6 +64,11 @@ export default function DashboardProprietaire() {
   const openCreate = () => {
     setEditingShop(null);
     setModalOpen(true);
+  };
+
+  const getShopName = (shopId: string) => {
+    const shop = shops.find((s) => s.id === shopId);
+    return shop?.nom || "—";
   };
 
   return (
@@ -75,7 +106,6 @@ export default function DashboardProprietaire() {
                 <Card key={shop.id} className="border-border/40 bg-muted/30 hover:shadow-md transition-shadow">
                   <CardContent className="p-4 space-y-3">
                     <div className="flex items-start gap-3">
-                      {/* Shop logo */}
                       <div className="h-12 w-12 shrink-0 rounded-xl overflow-hidden bg-primary/10 flex items-center justify-center">
                         {shop.logo_url ? (
                           <img src={shop.logo_url} alt={shop.nom} className="h-full w-full object-cover" />
@@ -122,17 +152,87 @@ export default function DashboardProprietaire() {
       {/* Section Mes Gérants */}
       <Card className="border-border/50 shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <Users className="h-5 w-5 text-primary" />
-            Mes Gérants
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Users className="h-5 w-5 text-primary" />
+              Mes Gérants
+            </CardTitle>
+            <Button
+              size="sm"
+              onClick={() => setManagerModalOpen(true)}
+              className="gap-1.5"
+              disabled={shops.length === 0}
+            >
+              <Plus className="h-4 w-4" />
+              Ajouter
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <Users className="h-12 w-12 text-muted-foreground/40 mb-3" />
-            <p className="text-muted-foreground text-sm">Aucun gérant pour le moment.</p>
-            <p className="text-muted-foreground/60 text-xs mt-1">Vous pourrez ajouter des gérants pour vos boutiques ici.</p>
-          </div>
+          {managersLoading ? (
+            <div className="flex justify-center py-12">
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+            </div>
+          ) : managers.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <Users className="h-12 w-12 text-muted-foreground/40 mb-3" />
+              <p className="text-muted-foreground text-sm">Aucun gérant pour le moment.</p>
+              <p className="text-muted-foreground/60 text-xs mt-1">
+                {shops.length === 0
+                  ? "Créez d'abord une boutique avant d'ajouter un gérant."
+                  : "Cliquez sur \"Ajouter\" pour créer votre premier gérant."}
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Nom</TableHead>
+                    <TableHead>WhatsApp</TableHead>
+                    <TableHead>Boutique</TableHead>
+                    <TableHead>Statut</TableHead>
+                    <TableHead className="text-right">Action</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {managers.map((m) => (
+                    <TableRow key={m.id}>
+                      <TableCell className="font-medium">{m.manager_name}</TableCell>
+                      <TableCell className="text-muted-foreground">{m.manager_whatsapp || "—"}</TableCell>
+                      <TableCell>{getShopName(m.shop_id)}</TableCell>
+                      <TableCell>
+                        <Badge variant={m.is_active ? "default" : "secondary"}>
+                          {m.is_active ? "Actif" : "Désactivé"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button
+                          size="sm"
+                          variant={m.is_active ? "destructive" : "outline"}
+                          onClick={() => handleToggleActive(m.id, m.is_active)}
+                          className="gap-1.5 text-xs"
+                          disabled={toggleManagerActive.isPending}
+                        >
+                          {m.is_active ? (
+                            <>
+                              <UserX className="h-3.5 w-3.5" />
+                              Désactiver
+                            </>
+                          ) : (
+                            <>
+                              <UserCheck className="h-3.5 w-3.5" />
+                              Réactiver
+                            </>
+                          )}
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -142,6 +242,14 @@ export default function DashboardProprietaire() {
         onSubmit={handleSubmit}
         isSubmitting={addShop.isPending || updateShop.isPending}
         editShop={editingShop}
+      />
+
+      <ManagerFormModal
+        open={managerModalOpen}
+        onOpenChange={setManagerModalOpen}
+        onSubmit={handleCreateManager}
+        isSubmitting={createManager.isPending}
+        shops={shops}
       />
     </div>
   );

@@ -15,6 +15,7 @@ import Stats from "./pages/Stats";
 import Auth from "./pages/Auth";
 import Abonnement from "./pages/Abonnement";
 import DashboardProprietaire from "./pages/DashboardProprietaire";
+import ChangementObligatoire from "./pages/ChangementObligatoire";
 import NotFound from "./pages/NotFound";
 import VerifyEmail from "./pages/VerifyEmail";
 
@@ -37,6 +38,7 @@ const App = () => (
           <Route path="/stats" element={<ProtectedRoute><AppLayout><Stats /></AppLayout></ProtectedRoute>} />
           <Route path="/abonnement" element={<RoleProtectedRoute allowedRoles={["proprietaire"]}><AppLayout><Abonnement /></AppLayout></RoleProtectedRoute>} />
           <Route path="/dashboard-proprietaire" element={<RoleProtectedRoute allowedRoles={["proprietaire"]}><AppLayout><DashboardProprietaire /></AppLayout></RoleProtectedRoute>} />
+          <Route path="/changement-obligatoire" element={<ProtectedRoute><ChangementObligatoire /></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
