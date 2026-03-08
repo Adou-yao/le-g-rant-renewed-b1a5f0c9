@@ -56,11 +56,7 @@ export function ManagerFormModal({ open, onOpenChange, onSubmit, isSubmitting, s
       email: email.trim().toLowerCase(),
       password,
       shop_id: shopId,
-    });
-      email: email.trim().toLowerCase(),
-      password,
-      shop_id: shopId,
-    });
+    if (result?.success) {
     if (result?.success) {
       const fullWhatsapp = whatsapp.trim() ? `${countryCode}${whatsapp.trim()}` : "";
       setCreatedManager({
