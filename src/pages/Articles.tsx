@@ -108,6 +108,8 @@ export default function Articles() {
 
       {isProprietaire && <SupervisionBadge />}
 
+      {!isProprietaire && <PendingDeliveries />}
+
       <div className="px-4 mb-5">
         <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-2xl p-5">
           <div className="absolute top-0 right-0 w-24 h-24 bg-primary/10 rounded-full blur-2xl" />
