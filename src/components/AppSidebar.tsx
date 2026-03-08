@@ -41,9 +41,7 @@ export function AppSidebar() {
   const { signOut } = useAuth();
   const { isProprietaire } = useUserRole();
 
-  const navItems = isProprietaire
-    ? [...baseNavItems, ...proprietaireOnlyItems]
-    : baseNavItems;
+  const navItems = isProprietaire ? proprietaireNavItems : gerantNavItems;
 
   const handleLogout = async () => {
     await signOut();
