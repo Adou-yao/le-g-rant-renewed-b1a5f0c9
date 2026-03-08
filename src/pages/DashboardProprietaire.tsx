@@ -2,7 +2,7 @@ import { useState } from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Store, Users, Plus, MapPin, Phone, Tag, Settings, Pencil, UserX, UserCheck } from "lucide-react";
+import { Store, Users, Plus, MapPin, Phone, Tag, Settings, Pencil, UserX, UserCheck, Trash2 } from "lucide-react";
 import { useShops } from "@/hooks/useShops";
 import { useManagers } from "@/hooks/useManagers";
 import { ShopFormModal } from "@/components/ShopFormModal";
