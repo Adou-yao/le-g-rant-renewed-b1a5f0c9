@@ -2,7 +2,7 @@ import { ReactNode, useState } from "react";
 import { SidebarProvider, useSidebar } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { cn } from "@/lib/utils";
-import shopIcon from "@/assets/shop-icon.png";
+import shopIcon from "@/assets/shop-trigger.jpg";
 
 function LogoTrigger() {
   const { toggleSidebar } = useSidebar();
