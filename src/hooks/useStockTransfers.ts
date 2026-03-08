@@ -61,6 +61,7 @@ export function useCreateTransfer() {
       shop_id: string;
       quantite: number;
       nouveau_prix_achat?: number | null;
+      source?: string;
     }) => {
       const { data, error } = await supabase
         .from("stock_transfers")
