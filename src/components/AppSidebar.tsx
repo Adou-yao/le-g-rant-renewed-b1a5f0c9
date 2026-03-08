@@ -51,7 +51,7 @@ export function AppSidebar() {
           </div>
           {!collapsed && (
             <div className="flex flex-col">
-              <span className="font-display text-sm font-bold text-sidebar-foreground">GestioPro</span>
+              <span className="font-display text-sm font-bold text-sidebar-foreground">Gestion Professionnelle</span>
               <span className="text-[10px] text-sidebar-foreground/50">Gestion simplifiée</span>
             </div>
           )}
