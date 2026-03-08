@@ -51,7 +51,7 @@ export default function Ventes() {
       const modePaiement = paymentMode === "espece" ? "Espèce" : getOperatorLabel(paymentOperator!);
       await addVente.mutateAsync({ produit_id: produit.id, nom_produit: produit.nom, quantite: quantity, montant_total: total, mode_paiement: modePaiement, est_credit: isCredit, nom_client: isCredit ? clientName : null });
       await updateStock.mutateAsync({ id: produit.id, stock_actuel: produit.stock_actuel - quantity });
-      if (isCredit && clientName.trim()) { const fullPhone = clientPhone ? `${countryCode}${clientPhone}` : null; await addDette.mutateAsync({ nom_client: clientName, telephone_client: fullPhone, montant_du: total }); }
+      if (isCredit && clientName.trim()) { const fullPhone = clientPhone ? `${countryCode}${clientPhone.trim().replace(/^0+/, "")}` : null; await addDette.mutateAsync({ nom_client: clientName, telephone_client: fullPhone, montant_du: total }); }
       toast.success(<div className="flex items-center gap-2"><Check className="h-5 w-5" /><span>Vente enregistrée: {new Intl.NumberFormat("fr-CI").format(total)} F</span></div>);
       setSelectedProduct(null); setQuantity(1); setIsCredit(false); setClientName(""); setClientPhone(""); setCountryCode("+225"); setCashReceived(""); setAddFees(false); setPaymentOperator(null);
     } catch { toast.error("Erreur lors de l'enregistrement de la vente"); }
