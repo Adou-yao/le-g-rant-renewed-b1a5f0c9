@@ -43,7 +43,7 @@ export default function Dashboard() {
     );
   }
 
-  const handleSignOut = async () => { const { error } = await signOut(); if (error) toast.error("Erreur lors de la déconnexion"); else toast.success("Déconnexion réussie"); };
+  
   const storeName = user?.user_metadata?.nom_boutique || "Ma Boutique";
 
   return (
