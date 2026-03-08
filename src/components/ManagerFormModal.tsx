@@ -17,6 +17,7 @@ interface ManagerFormModalProps {
 
 export function ManagerFormModal({ open, onOpenChange, onSubmit, isSubmitting, shops }: ManagerFormModalProps) {
   const [fullName, setFullName] = useState("");
+  const [countryCode, setCountryCode] = useState("+225");
   const [whatsapp, setWhatsapp] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
