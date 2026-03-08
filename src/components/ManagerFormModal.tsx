@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, MessageCircle, Copy, Check } from "lucide-react";
+import { CountryCodeSelect } from "@/components/ui/CountryCodeSelect";
 import type { Shop } from "@/hooks/useShops";
 
 interface ManagerFormModalProps {
@@ -17,6 +18,7 @@ interface ManagerFormModalProps {
 
 export function ManagerFormModal({ open, onOpenChange, onSubmit, isSubmitting, shops }: ManagerFormModalProps) {
   const [fullName, setFullName] = useState("");
+  const [countryCode, setCountryCode] = useState("+225");
   const [whatsapp, setWhatsapp] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,6 +34,7 @@ export function ManagerFormModal({ open, onOpenChange, onSubmit, isSubmitting, s
 
   const resetForm = () => {
     setFullName("");
+    setCountryCode("+225");
     setWhatsapp("");
     setEmail("");
     setPassword("");
@@ -49,7 +52,7 @@ export function ManagerFormModal({ open, onOpenChange, onSubmit, isSubmitting, s
     e.preventDefault();
     const result = await onSubmit({
       full_name: fullName.trim(),
-      whatsapp: whatsapp.trim(),
+      whatsapp: whatsapp.trim() ? `${countryCode}${whatsapp.trim()}` : "",
       email: email.trim().toLowerCase(),
       password,
       shop_id: shopId,
@@ -138,7 +141,10 @@ export function ManagerFormModal({ open, onOpenChange, onSubmit, isSubmitting, s
           </div>
           <div className="space-y-2">
             <Label htmlFor="mgr-wa">Numéro WhatsApp</Label>
-            <Input id="mgr-wa" type="tel" placeholder="Ex: +225 07 00 00 00 00" value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} maxLength={20} />
+            <div className="flex">
+              <CountryCodeSelect value={countryCode} onChange={setCountryCode} />
+              <Input id="mgr-wa" type="tel" placeholder="07 00 00 00 00" value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} className="rounded-l-none h-12" maxLength={15} />
+            </div>
           </div>
           <div className="space-y-2">
             <Label htmlFor="mgr-email">Email de connexion</Label>
