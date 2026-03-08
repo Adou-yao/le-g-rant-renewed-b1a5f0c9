@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 
 export default function DashboardProprietaire() {
   const { shops, isLoading, addShop, updateShop } = useShops();
-  const { managers, isLoading: managersLoading, createManager, toggleManagerActive } = useManagers();
+  const { managers, isLoading: managersLoading, createManager, toggleManagerActive, deleteManager } = useManagers();
   const [modalOpen, setModalOpen] = useState(false);
   const [editingShop, setEditingShop] = useState<Shop | null>(null);
   const [managerModalOpen, setManagerModalOpen] = useState(false);

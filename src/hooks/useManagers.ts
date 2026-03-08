@@ -75,10 +75,22 @@ export function useManagers() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["managers"] }),
   });
 
+  const deleteManager = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from("shop_managers" as any)
+        .delete()
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["managers"] }),
+  });
+
   return {
     managers: managersQuery.data ?? [],
     isLoading: managersQuery.isLoading,
     createManager,
     toggleManagerActive,
+    deleteManager,
   };
 }
