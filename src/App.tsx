@@ -15,6 +15,7 @@ import Stats from "./pages/Stats";
 import Auth from "./pages/Auth";
 import Abonnement from "./pages/Abonnement";
 import DashboardProprietaire from "./pages/DashboardProprietaire";
+import ChangementObligatoire from "./pages/ChangementObligatoire";
 import NotFound from "./pages/NotFound";
 import VerifyEmail from "./pages/VerifyEmail";
 
