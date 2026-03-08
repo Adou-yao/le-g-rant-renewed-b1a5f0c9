@@ -1,4 +1,4 @@
-import { LayoutDashboard, Receipt, Package, BookOpen, Wallet, LogOut, BarChart3, CreditCard, Network } from "lucide-react";
+import { LayoutDashboard, Receipt, Package, BookOpen, Wallet, LogOut, BarChart3, CreditCard, Network, ClipboardCheck } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import logo from "@/assets/logo.jpg";
 import { useAuth } from "@/hooks/useAuth";
