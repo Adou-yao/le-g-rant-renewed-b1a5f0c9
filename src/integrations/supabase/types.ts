@@ -259,6 +259,121 @@ export type Database = {
         }
         Relationships: []
       }
+      stock_movements: {
+        Row: {
+          created_at: string
+          id: string
+          manager_id: string
+          owner_id: string
+          produit_id: string
+          quantite: number
+          shop_id: string
+          transfer_id: string | null
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          manager_id: string
+          owner_id: string
+          produit_id: string
+          quantite: number
+          shop_id: string
+          transfer_id?: string | null
+          type?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          manager_id?: string
+          owner_id?: string
+          produit_id?: string
+          quantite?: number
+          shop_id?: string
+          transfer_id?: string | null
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_movements_produit_id_fkey"
+            columns: ["produit_id"]
+            isOneToOne: false
+            referencedRelation: "produits"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_movements_shop_id_fkey"
+            columns: ["shop_id"]
+            isOneToOne: false
+            referencedRelation: "shops"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_movements_transfer_id_fkey"
+            columns: ["transfer_id"]
+            isOneToOne: false
+            referencedRelation: "stock_transfers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stock_transfers: {
+        Row: {
+          confirmed_at: string | null
+          created_at: string
+          id: string
+          manager_id: string
+          nouveau_prix_achat: number | null
+          owner_id: string
+          produit_id: string
+          quantite: number
+          shop_id: string
+          statut: string
+          updated_at: string
+        }
+        Insert: {
+          confirmed_at?: string | null
+          created_at?: string
+          id?: string
+          manager_id: string
+          nouveau_prix_achat?: number | null
+          owner_id: string
+          produit_id: string
+          quantite: number
+          shop_id: string
+          statut?: string
+          updated_at?: string
+        }
+        Update: {
+          confirmed_at?: string | null
+          created_at?: string
+          id?: string
+          manager_id?: string
+          nouveau_prix_achat?: number | null
+          owner_id?: string
+          produit_id?: string
+          quantite?: number
+          shop_id?: string
+          statut?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_transfers_produit_id_fkey"
+            columns: ["produit_id"]
+            isOneToOne: false
+            referencedRelation: "produits"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_transfers_shop_id_fkey"
+            columns: ["shop_id"]
+            isOneToOne: false
+            referencedRelation: "shops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -335,6 +450,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      confirm_stock_transfer: {
+        Args: { transfer_id: string }
+        Returns: undefined
+      }
       has_admin_role: { Args: { _user_id: string }; Returns: boolean }
       user_owns_resource: {
         Args: { resource_user_id: string }

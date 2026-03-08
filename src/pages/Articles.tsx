@@ -11,6 +11,7 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { useUserRole } from "@/hooks/useUserRole";
 import { showReadOnlyAlert } from "@/components/ui/ReadOnlyAlert";
 import { SupervisionBadge } from "@/components/ui/SupervisionBadge";
+import { PendingDeliveries } from "@/components/PendingDeliveries";
 import { toast } from "sonner";
 
 export default function Articles() {
@@ -106,6 +107,8 @@ export default function Articles() {
       />
 
       {isProprietaire && <SupervisionBadge />}
+
+      {!isProprietaire && <PendingDeliveries />}
 
       <div className="px-4 mb-5">
         <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-2xl p-5">
