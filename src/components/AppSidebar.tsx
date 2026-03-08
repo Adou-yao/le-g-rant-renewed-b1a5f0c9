@@ -46,8 +46,8 @@ export function AppSidebar() {
           "flex items-center gap-3 transition-all duration-300",
           collapsed && "justify-center"
         )}>
-          <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/70 shadow-lg shadow-primary/25">
-            <LayoutDashboard className="h-5 w-5 text-primary-foreground" />
+          <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl overflow-hidden shadow-lg shadow-primary/25">
+            <img src={logo} alt="Le Gérant" className="h-full w-full object-cover" />
           </div>
           {!collapsed && (
             <div className="flex flex-col">
