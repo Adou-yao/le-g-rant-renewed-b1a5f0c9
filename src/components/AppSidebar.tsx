@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/sidebar";
 import { NavLink } from "@/components/NavLink";
 
-const baseNavItems = [
+const gerantNavItems = [
   { icon: LayoutDashboard, label: "Ma Boutique", path: "/" },
   { icon: Receipt, label: "Nouvelle Vente", path: "/ventes" },
   { icon: Package, label: "Stock", path: "/articles" },
@@ -27,7 +27,8 @@ const baseNavItems = [
   { icon: BarChart3, label: "Statistiques", path: "/stats" },
 ];
 
-const proprietaireOnlyItems = [
+const proprietaireNavItems = [
+  { icon: LayoutDashboard, label: "Supervision", path: "/dashboard-superviseur" },
   { icon: Network, label: "Mon Réseau", path: "/dashboard-proprietaire" },
   { icon: CreditCard, label: "Abonnement", path: "/abonnement" },
 ];
