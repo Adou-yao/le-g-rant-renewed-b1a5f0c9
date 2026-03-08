@@ -521,6 +521,14 @@ export default function DashboardSuperviseur() {
           shopId={restockProduct.shopId}
         />
       )}
+
+      {/* Create Product Modal */}
+      <CreateProductModal
+        open={showCreateProduct}
+        onOpenChange={setShowCreateProduct}
+        managers={managers}
+        shops={shops}
+      />
     </div>
   );
 }
