@@ -1,7 +1,6 @@
 import { ReactNode, useState } from "react";
 import { SidebarProvider, useSidebar } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
-import logo from "@/assets/logo.jpg";
 import { cn } from "@/lib/utils";
 
 function LogoTrigger() {
@@ -11,23 +10,38 @@ function LogoTrigger() {
   const handleClick = () => {
     setClicked(true);
     toggleSidebar();
-    setTimeout(() => setClicked(false), 400);
+    setTimeout(() => setClicked(false), 600);
   };
 
   return (
     <button
       onClick={handleClick}
-      className="ml-3 flex items-center justify-center rounded-xl overflow-hidden shadow-lg shadow-primary/25 transition-transform duration-300 ease-out active:scale-90 focus:outline-none focus:ring-2 focus:ring-ring"
+      className="ml-3 relative flex items-center justify-center h-10 w-10 rounded-2xl gradient-primary glow-primary transition-all duration-300 ease-out active:scale-90 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-ring group"
       aria-label="Toggle sidebar"
     >
-      <img
-        src={logo}
-        alt="Le Gérant"
+      {/* Spinning ring accent */}
+      <span
         className={cn(
-          "h-9 w-9 object-cover transition-transform duration-300 ease-out",
-          clicked && "rotate-[360deg] scale-110"
+          "absolute inset-0 rounded-2xl border-2 border-transparent transition-all duration-500",
+          clicked
+            ? "border-t-white/60 border-r-white/30 animate-spin"
+            : "group-hover:border-t-white/30"
         )}
       />
+      {/* The G */}
+      <span
+        className={cn(
+          "relative font-display text-xl font-black text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.4)] transition-all duration-500 ease-out select-none",
+          clicked ? "scale-125 rotate-[360deg]" : "group-hover:scale-110"
+        )}
+        style={{ lineHeight: 1 }}
+      >
+        G
+      </span>
+      {/* Pulse ring on click */}
+      {clicked && (
+        <span className="absolute inset-0 rounded-2xl border-2 border-white/40 animate-ping" />
+      )}
     </button>
   );
 }
