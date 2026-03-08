@@ -83,6 +83,7 @@ export default function DashboardSuperviseur() {
   const [showCreateProduct, setShowCreateProduct] = useState(false);
 
   const { data: ownerTransfers = [] } = useOwnerTransfers();
+  const { data: rejectedTransfers = [] } = useRejectedTransfers();
   const managerIds = useMemo(() => managers.map((m) => m.manager_id), [managers]);
 
   // Fetch all managers' sales
