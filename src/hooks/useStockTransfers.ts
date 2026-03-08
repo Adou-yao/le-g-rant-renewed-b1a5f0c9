@@ -15,6 +15,7 @@ export interface StockTransfer {
   created_at: string;
   confirmed_at: string | null;
   updated_at: string;
+  rejection_reason: string | null;
 }
 
 export function useOwnerTransfers() {
