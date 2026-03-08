@@ -200,7 +200,18 @@ export default function DashboardProprietaire() {
                   {managers.map((m) => (
                     <TableRow key={m.id}>
                       <TableCell className="font-medium">{m.manager_name}</TableCell>
-                      <TableCell className="text-muted-foreground">{m.manager_whatsapp || "—"}</TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {m.manager_whatsapp ? (
+                          <a
+                            href={`https://wa.me/${m.manager_whatsapp.replace(/[^0-9]/g, "")}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-green-600 hover:underline"
+                          >
+                            {m.manager_whatsapp}
+                          </a>
+                        ) : "—"}
+                      </TableCell>
                       <TableCell>{getShopName(m.shop_id)}</TableCell>
                       <TableCell>
                         <Badge variant={m.is_active ? "default" : "secondary"}>
