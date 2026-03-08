@@ -133,6 +133,7 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          must_change_password: boolean
           nom_boutique: string | null
           phone: string | null
           store_name: string | null
@@ -148,6 +149,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          must_change_password?: boolean
           nom_boutique?: string | null
           phone?: string | null
           store_name?: string | null
@@ -163,6 +165,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          must_change_password?: boolean
           nom_boutique?: string | null
           phone?: string | null
           store_name?: string | null
@@ -172,6 +175,53 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      shop_managers: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          manager_email: string
+          manager_id: string
+          manager_name: string
+          manager_whatsapp: string
+          owner_id: string
+          shop_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          manager_email?: string
+          manager_id: string
+          manager_name: string
+          manager_whatsapp?: string
+          owner_id: string
+          shop_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          manager_email?: string
+          manager_id?: string
+          manager_name?: string
+          manager_whatsapp?: string
+          owner_id?: string
+          shop_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shop_managers_shop_id_fkey"
+            columns: ["shop_id"]
+            isOneToOne: false
+            referencedRelation: "shops"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       shops: {
         Row: {
