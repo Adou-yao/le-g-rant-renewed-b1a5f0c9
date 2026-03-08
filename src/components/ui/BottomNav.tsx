@@ -1,4 +1,4 @@
-import { Home, ShoppingCart, Package, BookOpen, Wallet, LayoutDashboard, Network, CreditCard, LucideIcon } from "lucide-react";
+import { Home, ShoppingCart, Package, BookOpen, Wallet, LayoutDashboard, Network, CreditCard, ClipboardCheck, LucideIcon } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useUserRole } from "@/hooks/useUserRole";
