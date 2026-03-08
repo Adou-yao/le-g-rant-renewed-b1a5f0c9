@@ -32,6 +32,7 @@ import {
   PackagePlus,
 } from "lucide-react";
 import { ReapprovisionnementModal } from "@/components/ReapprovisionnementModal";
+import { CreateProductModal } from "@/components/CreateProductModal";
 import { useOwnerTransfers } from "@/hooks/useStockTransfers";
 import { InventaireReports } from "@/components/InventaireReports";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
