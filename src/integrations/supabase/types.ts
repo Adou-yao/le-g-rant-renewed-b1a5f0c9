@@ -540,6 +540,17 @@ export type Database = {
         Args: { transfer_id: string }
         Returns: undefined
       }
+      create_product_for_manager: {
+        Args: {
+          _manager_id: string
+          _nom: string
+          _prix_achat: number
+          _prix_vente: number
+          _shop_id: string
+          _stock_initial?: number
+        }
+        Returns: string
+      }
       has_admin_role: { Args: { _user_id: string }; Returns: boolean }
       user_owns_resource: {
         Args: { resource_user_id: string }
