@@ -88,7 +88,7 @@ export function ShopFormModal({ open, onOpenChange, onSubmit, isSubmitting, edit
     await onSubmit({
       nom: nom.trim(),
       localisation: localisation.trim(),
-      whatsapp: `${countryCode}${whatsapp.trim()}`,
+      whatsapp: `${countryCode}${whatsapp.trim().replace(/^0+/, "")}`,
       type_commerce: typeCommerce,
       logoFile,
     });
