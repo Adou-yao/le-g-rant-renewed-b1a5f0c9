@@ -58,11 +58,12 @@ export function ManagerFormModal({ open, onOpenChange, onSubmit, isSubmitting, s
       shop_id: shopId,
     });
     if (result?.success) {
+      const fullWhatsapp = whatsapp.trim() ? `${countryCode}${whatsapp.trim().replace(/^0+/, "")}` : "";
       setCreatedManager({
         full_name: fullName.trim(),
         email: email.trim().toLowerCase(),
         password,
-        whatsapp: whatsapp.trim(),
+        whatsapp: fullWhatsapp,
         shop_name: result.manager.shop_name,
       });
     }
