@@ -152,7 +152,10 @@ export function ShopFormModal({ open, onOpenChange, onSubmit, isSubmitting, edit
           </div>
           <div className="space-y-2">
             <Label htmlFor="shop-wa">Numéro WhatsApp</Label>
-            <Input id="shop-wa" type="tel" placeholder="Ex: +225 07 00 00 00 00" value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} required maxLength={20} />
+            <div className="flex">
+              <CountryCodeSelect value={countryCode} onChange={setCountryCode} />
+              <Input id="shop-wa" type="tel" placeholder="07 00 00 00 00" value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} required className="rounded-l-none h-12" maxLength={15} />
+            </div>
           </div>
           <div className="space-y-2">
             <Label>Type de commerce</Label>
