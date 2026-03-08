@@ -40,6 +40,12 @@ export function CreateProductModal({ open, onOpenChange, managers, shops }: Prop
     shopId: "",
   });
 
+  const prixAchat = parseFloat(form.prixAchat) || 0;
+  const prixVente = parseFloat(form.prixVente) || 0;
+  const hasPrices = form.prixAchat !== "" && form.prixVente !== "";
+  const marge = prixVente - prixAchat;
+  const margeInvalide = hasPrices && prixVente <= prixAchat;
+
   // Auto-fill shopId when manager is selected
   const handleManagerChange = (managerId: string) => {
     const manager = managers.find((m) => m.manager_id === managerId);
@@ -51,14 +57,18 @@ export function CreateProductModal({ open, onOpenChange, managers, shops }: Prop
       toast.error("Remplis tous les champs obligatoires");
       return;
     }
+    if (margeInvalide) {
+      toast.error("Le prix de vente doit être supérieur au prix d'achat");
+      return;
+    }
     setLoading(true);
     try {
       const { error } = await supabase.rpc("create_product_for_manager", {
         _manager_id: form.managerId,
         _shop_id: form.shopId,
         _nom: form.nom,
-        _prix_achat: parseFloat(form.prixAchat),
-        _prix_vente: parseFloat(form.prixVente),
+        _prix_achat: prixAchat,
+        _prix_vente: prixVente,
         _stock_initial: parseInt(form.stockInitial) || 0,
       });
       if (error) throw error;
@@ -119,9 +129,32 @@ export function CreateProductModal({ open, onOpenChange, managers, shops }: Prop
             </div>
             <div>
               <Label htmlFor="cp-pv">Prix de vente (F) *</Label>
-              <Input id="cp-pv" type="number" placeholder="4500" value={form.prixVente} onChange={(e) => setForm({ ...form, prixVente: e.target.value })} className="mt-1.5" />
+              <Input id="cp-pv" type="number" placeholder="4500" value={form.prixVente} onChange={(e) => setForm({ ...form, prixVente: e.target.value })} className={`mt-1.5 ${margeInvalide ? "border-destructive focus-visible:ring-destructive" : ""}`} />
             </div>
           </div>
+
+          {/* Erreur marge */}
+          {margeInvalide && (
+            <p className="text-sm font-medium text-destructive">
+              Erreur : Le prix de vente doit être supérieur au prix d'achat pour garantir votre marge.
+            </p>
+          )}
+
+          {/* Calcul de marge en direct */}
+          {hasPrices && !margeInvalide && (
+            <div className="p-3 rounded-xl bg-accent/50 border border-accent">
+              <p className="text-sm font-medium text-accent-foreground">
+                💰 Bénéfice prévu : <span className="font-bold">{marge.toLocaleString()} FCFA</span>
+              </p>
+            </div>
+          )}
+          {hasPrices && margeInvalide && (
+            <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/30">
+              <p className="text-sm font-medium text-destructive">
+                💰 Bénéfice prévu : <span className="font-bold">{marge.toLocaleString()} FCFA</span>
+              </p>
+            </div>
+          )}
 
           <div>
             <Label htmlFor="cp-stock">Stock initial (optionnel)</Label>
@@ -131,7 +164,7 @@ export function CreateProductModal({ open, onOpenChange, managers, shops }: Prop
             </p>
           </div>
 
-          <Button onClick={handleSubmit} disabled={loading} className="w-full h-12 bg-success hover:bg-success/90 text-success-foreground">
+          <Button onClick={handleSubmit} disabled={loading || margeInvalide} className="w-full h-12 bg-success hover:bg-success/90 text-success-foreground">
             {loading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Plus className="mr-2 h-5 w-5" />}
             Créer le produit
           </Button>

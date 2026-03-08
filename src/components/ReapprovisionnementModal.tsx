@@ -10,7 +10,7 @@ import { toast } from "sonner";
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  produit: { id: string; nom: string; prix_achat: number; user_id: string };
+  produit: { id: string; nom: string; prix_achat: number; prix_vente: number; user_id: string };
   ownerId: string;
   managerId: string;
   shopId: string;
@@ -21,10 +21,19 @@ export function ReapprovisionnementModal({ open, onOpenChange, produit, ownerId,
   const [nouveauPrix, setNouveauPrix] = useState(String(produit.prix_achat));
   const createTransfer = useCreateTransfer();
 
+  const nouveauPrixNum = parseFloat(nouveauPrix) || 0;
+  const hasPrix = nouveauPrix !== "";
+  const marge = produit.prix_vente - nouveauPrixNum;
+  const margeInvalide = hasPrix && produit.prix_vente <= nouveauPrixNum;
+
   const handleSubmit = async () => {
     const qty = parseInt(quantite);
     if (!qty || qty <= 0) {
       toast.error("Quantité invalide");
+      return;
+    }
+    if (margeInvalide) {
+      toast.error("Le nouveau prix d'achat rend la marge négative ou nulle");
       return;
     }
     try {
@@ -73,9 +82,36 @@ export function ReapprovisionnementModal({ open, onOpenChange, produit, ownerId,
               placeholder="Laisser vide = inchangé"
               value={nouveauPrix}
               onChange={(e) => setNouveauPrix(e.target.value)}
-              className="mt-1.5"
+              className={`mt-1.5 ${margeInvalide ? "border-destructive focus-visible:ring-destructive" : ""}`}
             />
+            <p className="text-xs text-muted-foreground mt-1">
+              Prix de vente actuel : {produit.prix_vente.toLocaleString()} F
+            </p>
           </div>
+
+          {/* Erreur marge */}
+          {margeInvalide && (
+            <p className="text-sm font-medium text-destructive">
+              Erreur : Le prix de vente doit être supérieur au prix d'achat pour garantir votre marge.
+            </p>
+          )}
+
+          {/* Calcul de marge en direct */}
+          {hasPrix && !margeInvalide && (
+            <div className="p-3 rounded-xl bg-accent/50 border border-accent">
+              <p className="text-sm font-medium text-accent-foreground">
+                💰 Bénéfice prévu : <span className="font-bold">{marge.toLocaleString()} FCFA</span>
+              </p>
+            </div>
+          )}
+          {hasPrix && margeInvalide && (
+            <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/30">
+              <p className="text-sm font-medium text-destructive">
+                💰 Bénéfice prévu : <span className="font-bold">{marge.toLocaleString()} FCFA</span>
+              </p>
+            </div>
+          )}
+
           <div className="p-3 rounded-xl bg-primary/10 border border-primary/20">
             <p className="text-xs text-primary font-medium">
               📦 Le stock ne sera mis à jour qu'après confirmation du gérant.
@@ -83,7 +119,7 @@ export function ReapprovisionnementModal({ open, onOpenChange, produit, ownerId,
           </div>
           <Button
             onClick={handleSubmit}
-            disabled={createTransfer.isPending}
+            disabled={createTransfer.isPending || margeInvalide}
             className="w-full h-12 bg-primary hover:bg-primary/90"
           >
             {createTransfer.isPending ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Send className="mr-2 h-5 w-5" />}
