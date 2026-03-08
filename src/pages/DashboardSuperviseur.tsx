@@ -78,6 +78,7 @@ export default function DashboardSuperviseur() {
   const { managers } = useManagers();
   const [selectedShop, setSelectedShop] = useState<string>("all");
   const [restockProduct, setRestockProduct] = useState<any>(null);
+  const [showCreateProduct, setShowCreateProduct] = useState(false);
 
   const { data: ownerTransfers = [] } = useOwnerTransfers();
   const managerIds = useMemo(() => managers.map((m) => m.manager_id), [managers]);
