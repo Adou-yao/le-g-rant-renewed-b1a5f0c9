@@ -2,7 +2,7 @@ import { useState } from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Store, Users, Plus, MapPin, Phone, Tag, Settings, Pencil, UserX, UserCheck } from "lucide-react";
+import { Store, Users, Plus, MapPin, Phone, Tag, Settings, Pencil, UserX, UserCheck, Trash2 } from "lucide-react";
 import { useShops } from "@/hooks/useShops";
 import { useManagers } from "@/hooks/useManagers";
 import { ShopFormModal } from "@/components/ShopFormModal";
@@ -11,10 +11,11 @@ import type { Shop } from "@/hooks/useShops";
 import { toast } from "sonner";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 export default function DashboardProprietaire() {
   const { shops, isLoading, addShop, updateShop } = useShops();
-  const { managers, isLoading: managersLoading, createManager, toggleManagerActive } = useManagers();
+  const { managers, isLoading: managersLoading, createManager, toggleManagerActive, deleteManager } = useManagers();
   const [modalOpen, setModalOpen] = useState(false);
   const [editingShop, setEditingShop] = useState<Shop | null>(null);
   const [managerModalOpen, setManagerModalOpen] = useState(false);
@@ -207,25 +208,56 @@ export default function DashboardProprietaire() {
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button
-                          size="sm"
-                          variant={m.is_active ? "destructive" : "outline"}
-                          onClick={() => handleToggleActive(m.id, m.is_active)}
-                          className="gap-1.5 text-xs"
-                          disabled={toggleManagerActive.isPending}
-                        >
-                          {m.is_active ? (
-                            <>
-                              <UserX className="h-3.5 w-3.5" />
-                              Désactiver
-                            </>
-                          ) : (
-                            <>
-                              <UserCheck className="h-3.5 w-3.5" />
-                              Réactiver
-                            </>
-                          )}
-                        </Button>
+                        <div className="flex items-center justify-end gap-2">
+                          <Button
+                            size="sm"
+                            variant={m.is_active ? "destructive" : "outline"}
+                            onClick={() => handleToggleActive(m.id, m.is_active)}
+                            className="gap-1.5 text-xs"
+                            disabled={toggleManagerActive.isPending}
+                          >
+                            {m.is_active ? (
+                              <>
+                                <UserX className="h-3.5 w-3.5" />
+                                Désactiver
+                              </>
+                            ) : (
+                              <>
+                                <UserCheck className="h-3.5 w-3.5" />
+                                Réactiver
+                              </>
+                            )}
+                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button size="sm" variant="outline" className="gap-1.5 text-xs text-destructive hover:text-destructive">
+                                <Trash2 className="h-3.5 w-3.5" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Supprimer ce gérant ?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Le gérant <strong>{m.manager_name}</strong> sera supprimé définitivement. Cette action est irréversible.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Annuler</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => {
+                                    deleteManager.mutate(m.id, {
+                                      onSuccess: () => toast.success("Gérant supprimé"),
+                                      onError: () => toast.error("Erreur lors de la suppression"),
+                                    });
+                                  }}
+                                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                >
+                                  Supprimer
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
