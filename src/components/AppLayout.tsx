@@ -2,6 +2,7 @@ import { ReactNode, useState } from "react";
 import { SidebarProvider, useSidebar } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { cn } from "@/lib/utils";
+import shopIcon from "@/assets/shop-icon.png";
 
 function LogoTrigger() {
   const { toggleSidebar } = useSidebar();
@@ -16,7 +17,7 @@ function LogoTrigger() {
   return (
     <button
       onClick={handleClick}
-      className="ml-3 relative flex items-center justify-center h-10 w-10 rounded-2xl gradient-primary glow-primary transition-all duration-300 ease-out active:scale-90 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-ring group"
+      className="ml-3 relative flex items-center justify-center h-11 w-11 rounded-2xl transition-all duration-300 ease-out active:scale-90 hover:scale-105 focus:outline-none group"
       aria-label="Toggle sidebar"
     >
       {/* Spinning ring accent */}
@@ -24,23 +25,22 @@ function LogoTrigger() {
         className={cn(
           "absolute inset-0 rounded-2xl border-2 border-transparent transition-all duration-500",
           clicked
-            ? "border-t-white/60 border-r-white/30 animate-spin"
-            : "group-hover:border-t-white/30"
+            ? "border-t-primary/60 border-r-primary/30 animate-spin"
+            : "group-hover:border-t-primary/20"
         )}
       />
-      {/* The G */}
-      <span
+      {/* Shop icon */}
+      <img
+        src={shopIcon}
+        alt="Le Gérant"
         className={cn(
-          "relative font-display text-xl font-black text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.4)] transition-all duration-500 ease-out select-none",
+          "relative h-10 w-10 object-contain transition-all duration-500 ease-out select-none drop-shadow-lg",
           clicked ? "scale-125 rotate-[360deg]" : "group-hover:scale-110"
         )}
-        style={{ lineHeight: 1 }}
-      >
-        G
-      </span>
+      />
       {/* Pulse ring on click */}
       {clicked && (
-        <span className="absolute inset-0 rounded-2xl border-2 border-white/40 animate-ping" />
+        <span className="absolute inset-0 rounded-2xl border-2 border-primary/40 animate-ping" />
       )}
     </button>
   );
