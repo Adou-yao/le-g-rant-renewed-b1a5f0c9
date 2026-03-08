@@ -11,6 +11,7 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { useUserRole } from "@/hooks/useUserRole";
 import { showReadOnlyAlert } from "@/components/ui/ReadOnlyAlert";
 import { SupervisionBadge } from "@/components/ui/SupervisionBadge";
+import { PendingDeliveries } from "@/components/PendingDeliveries";
 import { toast } from "sonner";
 
 export default function Articles() {
