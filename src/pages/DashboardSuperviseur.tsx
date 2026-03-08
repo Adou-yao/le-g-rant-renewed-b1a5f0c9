@@ -33,6 +33,8 @@ import {
 } from "lucide-react";
 import { ReapprovisionnementModal } from "@/components/ReapprovisionnementModal";
 import { useOwnerTransfers } from "@/hooks/useStockTransfers";
+import { InventaireReports } from "@/components/InventaireReports";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface ManagerVente {
   id: string;
@@ -237,7 +239,23 @@ export default function DashboardSuperviseur() {
         <SupervisionBadge />
       </div>
 
-      {/* KPI Cards */}
+      {/* Tabs */}
+      <Tabs defaultValue="overview" className="w-full">
+        <TabsList className="w-full grid grid-cols-2">
+          <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
+          <TabsTrigger value="inventaires">Rapports d'Inventaire</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="inventaires" className="mt-4">
+          <InventaireReports
+            managers={managers}
+            shops={shops}
+            produits={allProduits}
+          />
+        </TabsContent>
+
+        <TabsContent value="overview" className="mt-4 space-y-6">
+
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <StatCard
           label="Chiffre d'Affaires"
@@ -481,6 +499,9 @@ export default function DashboardSuperviseur() {
         <ShieldCheck className="h-3.5 w-3.5" />
         <span>Données certifiées et protégées contre toute modification manuelle</span>
       </div>
+
+        </TabsContent>
+      </Tabs>
 
       {/* Restock Modal */}
       {restockProduct && user && (

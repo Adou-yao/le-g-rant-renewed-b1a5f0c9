@@ -1,4 +1,4 @@
-import { Home, ShoppingCart, Package, BookOpen, Wallet, LayoutDashboard, Network, CreditCard, LucideIcon } from "lucide-react";
+import { Home, ShoppingCart, Package, BookOpen, Wallet, LayoutDashboard, Network, CreditCard, ClipboardCheck, LucideIcon } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -13,7 +13,7 @@ const gerantItems: NavItem[] = [
   { icon: Home, label: "Accueil", path: "/" },
   { icon: ShoppingCart, label: "Vendre", path: "/ventes" },
   { icon: Package, label: "Articles", path: "/articles" },
-  { icon: Wallet, label: "Dépenses", path: "/depenses" },
+  { icon: ClipboardCheck, label: "Inventaire", path: "/faire-inventaire" },
   { icon: BookOpen, label: "Dettes", path: "/dettes" },
 ];
 

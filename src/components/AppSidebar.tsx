@@ -1,4 +1,4 @@
-import { LayoutDashboard, Receipt, Package, BookOpen, Wallet, LogOut, BarChart3, CreditCard, Network } from "lucide-react";
+import { LayoutDashboard, Receipt, Package, BookOpen, Wallet, LogOut, BarChart3, CreditCard, Network, ClipboardCheck } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import logo from "@/assets/logo.jpg";
 import { useAuth } from "@/hooks/useAuth";
@@ -25,6 +25,7 @@ const gerantNavItems = [
   { icon: BookOpen, label: "Dettes", path: "/dettes" },
   { icon: Wallet, label: "Dépenses", path: "/depenses" },
   { icon: BarChart3, label: "Statistiques", path: "/stats" },
+  { icon: ClipboardCheck, label: "Inventaire", path: "/faire-inventaire" },
 ];
 
 const proprietaireNavItems = [

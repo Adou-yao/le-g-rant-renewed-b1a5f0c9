@@ -17,6 +17,7 @@ import Auth from "./pages/Auth";
 import Abonnement from "./pages/Abonnement";
 import DashboardProprietaire from "./pages/DashboardProprietaire";
 import DashboardSuperviseur from "./pages/DashboardSuperviseur";
+import FaireInventaire from "./pages/FaireInventaire";
 import ChangementObligatoire from "./pages/ChangementObligatoire";
 import NotFound from "./pages/NotFound";
 import VerifyEmail from "./pages/VerifyEmail";
@@ -39,6 +40,7 @@ const App = () => (
           <Route path="/dettes" element={<GerantOnlyRoute><AppLayout><Dettes /></AppLayout></GerantOnlyRoute>} />
           <Route path="/depenses" element={<GerantOnlyRoute><AppLayout><Depenses /></AppLayout></GerantOnlyRoute>} />
           <Route path="/stats" element={<GerantOnlyRoute><AppLayout><Stats /></AppLayout></GerantOnlyRoute>} />
+          <Route path="/faire-inventaire" element={<GerantOnlyRoute><AppLayout><FaireInventaire /></AppLayout></GerantOnlyRoute>} />
           {/* Proprietaire only */}
           <Route path="/abonnement" element={<RoleProtectedRoute allowedRoles={["proprietaire"]}><AppLayout><Abonnement /></AppLayout></RoleProtectedRoute>} />
           <Route path="/dashboard-proprietaire" element={<RoleProtectedRoute allowedRoles={["proprietaire"]}><AppLayout><DashboardProprietaire /></AppLayout></RoleProtectedRoute>} />
