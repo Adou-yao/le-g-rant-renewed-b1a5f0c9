@@ -9,6 +9,7 @@ export interface Shop {
   localisation: string;
   whatsapp: string;
   type_commerce: string;
+  logo_url: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -34,21 +35,48 @@ export function useShops() {
     enabled: !!user,
   });
 
+  const uploadLogo = async (file: File, shopId: string): Promise<string> => {
+    const ext = file.name.split(".").pop();
+    const path = `${user!.id}/${shopId}.${ext}`;
+    const { error } = await supabase.storage
+      .from("shop-logos")
+      .upload(path, file, { upsert: true });
+    if (error) throw error;
+    const { data } = supabase.storage.from("shop-logos").getPublicUrl(path);
+    return data.publicUrl;
+  };
+
   const addShop = useMutation({
-    mutationFn: async (shop: Omit<ShopInsert, "user_id">) => {
+    mutationFn: async ({ logoFile, ...shop }: Omit<ShopInsert, "user_id"> & { logoFile?: File | null }) => {
       const { data, error } = await supabase
         .from("shops" as any)
         .insert({ ...shop, user_id: user!.id } as any)
         .select()
         .single();
       if (error) throw error;
-      return data as unknown as Shop;
+      const created = data as unknown as Shop;
+
+      if (logoFile) {
+        const logoUrl = await uploadLogo(logoFile, created.id);
+        const { error: updateError } = await supabase
+          .from("shops" as any)
+          .update({ logo_url: logoUrl } as any)
+          .eq("id", created.id);
+        if (updateError) throw updateError;
+        created.logo_url = logoUrl;
+      }
+
+      return created;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["shops"] }),
   });
 
   const updateShop = useMutation({
-    mutationFn: async ({ id, ...updates }: ShopUpdate & { id: string }) => {
+    mutationFn: async ({ id, logoFile, ...updates }: ShopUpdate & { id: string; logoFile?: File | null }) => {
+      if (logoFile) {
+        const logoUrl = await uploadLogo(logoFile, id);
+        (updates as any).logo_url = logoUrl;
+      }
       const { data, error } = await supabase
         .from("shops" as any)
         .update(updates as any)
