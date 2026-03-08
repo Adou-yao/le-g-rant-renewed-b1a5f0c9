@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppLayout } from "@/components/AppLayout";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { RoleProtectedRoute } from "@/components/RoleProtectedRoute";
 import Index from "./pages/Index";
 import Ventes from "./pages/Ventes";
 import Articles from "./pages/Articles";
@@ -13,6 +14,7 @@ import Depenses from "./pages/Depenses";
 import Stats from "./pages/Stats";
 import Auth from "./pages/Auth";
 import Abonnement from "./pages/Abonnement";
+import DashboardProprietaire from "./pages/DashboardProprietaire";
 import NotFound from "./pages/NotFound";
 import VerifyEmail from "./pages/VerifyEmail";
 
@@ -33,7 +35,8 @@ const App = () => (
           <Route path="/dettes" element={<ProtectedRoute><AppLayout><Dettes /></AppLayout></ProtectedRoute>} />
           <Route path="/depenses" element={<ProtectedRoute><AppLayout><Depenses /></AppLayout></ProtectedRoute>} />
           <Route path="/stats" element={<ProtectedRoute><AppLayout><Stats /></AppLayout></ProtectedRoute>} />
-          <Route path="/abonnement" element={<ProtectedRoute><AppLayout><Abonnement /></AppLayout></ProtectedRoute>} />
+          <Route path="/abonnement" element={<RoleProtectedRoute allowedRoles={["proprietaire"]}><AppLayout><Abonnement /></AppLayout></RoleProtectedRoute>} />
+          <Route path="/dashboard-proprietaire" element={<RoleProtectedRoute allowedRoles={["proprietaire"]}><AppLayout><DashboardProprietaire /></AppLayout></RoleProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
