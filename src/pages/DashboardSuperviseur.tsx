@@ -376,6 +376,10 @@ export default function DashboardSuperviseur() {
                 {lowStockProduits.length} alerte{lowStockProduits.length > 1 ? "s" : ""}
               </Badge>
             )}
+            <Button size="sm" variant="outline" className="ml-auto text-xs" onClick={() => setShowCreateProduct(true)}>
+              <Plus className="h-3.5 w-3.5 mr-1" />
+              Nouveau Produit
+            </Button>
           </CardTitle>
         </CardHeader>
         <CardContent>
