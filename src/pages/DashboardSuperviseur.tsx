@@ -254,7 +254,7 @@ export default function DashboardSuperviseur() {
           </TabsContent>
 
           <TabsContent value="overview" className="mt-4 space-y-6">
-      </div>
+
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <StatCard
           label="Chiffre d'Affaires"
