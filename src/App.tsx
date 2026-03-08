@@ -3,7 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { BottomNav } from "@/components/ui/BottomNav";
+import { AppLayout } from "@/components/AppLayout";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Ventes from "./pages/Ventes";
@@ -27,13 +27,13 @@ const App = () => (
         <Routes>
           <Route path="/auth" element={<Auth />} />
           <Route path="/verify" element={<VerifyEmail />} />
-          <Route path="/" element={<ProtectedRoute><div className="min-h-screen bg-background pb-20"><Index /><BottomNav /></div></ProtectedRoute>} />
-          <Route path="/ventes" element={<ProtectedRoute><div className="min-h-screen bg-background pb-20"><Ventes /><BottomNav /></div></ProtectedRoute>} />
-          <Route path="/articles" element={<ProtectedRoute><div className="min-h-screen bg-background pb-20"><Articles /><BottomNav /></div></ProtectedRoute>} />
-          <Route path="/dettes" element={<ProtectedRoute><div className="min-h-screen bg-background pb-20"><Dettes /><BottomNav /></div></ProtectedRoute>} />
-          <Route path="/depenses" element={<ProtectedRoute><div className="min-h-screen bg-background pb-20"><Depenses /><BottomNav /></div></ProtectedRoute>} />
-          <Route path="/stats" element={<ProtectedRoute><div className="min-h-screen bg-background pb-20"><Stats /><BottomNav /></div></ProtectedRoute>} />
-          <Route path="/abonnement" element={<ProtectedRoute><Abonnement /></ProtectedRoute>} />
+          <Route path="/" element={<ProtectedRoute><AppLayout><Index /></AppLayout></ProtectedRoute>} />
+          <Route path="/ventes" element={<ProtectedRoute><AppLayout><Ventes /></AppLayout></ProtectedRoute>} />
+          <Route path="/articles" element={<ProtectedRoute><AppLayout><Articles /></AppLayout></ProtectedRoute>} />
+          <Route path="/dettes" element={<ProtectedRoute><AppLayout><Dettes /></AppLayout></ProtectedRoute>} />
+          <Route path="/depenses" element={<ProtectedRoute><AppLayout><Depenses /></AppLayout></ProtectedRoute>} />
+          <Route path="/stats" element={<ProtectedRoute><AppLayout><Stats /></AppLayout></ProtectedRoute>} />
+          <Route path="/abonnement" element={<ProtectedRoute><AppLayout><Abonnement /></AppLayout></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
