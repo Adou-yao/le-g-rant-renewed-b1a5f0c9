@@ -86,16 +86,9 @@ export default function Articles() {
                     <Input id="prixVente" type="number" placeholder="4500" value={newProduct.prixVente} onChange={(e) => setNewProduct({ ...newProduct, prixVente: e.target.value })} className="mt-1.5" />
                   </div>
                 </div>
-                {isProprietaire ? (
-                  <div className="p-3 rounded-xl bg-primary/10 border border-primary/20">
-                    <p className="text-xs text-primary font-medium">🔒 Le stock initial sera défini par le gérant ou via un réapprovisionnement.</p>
-                  </div>
-                ) : (
-                  <div>
-                    <Label htmlFor="stock">Stock initial</Label>
-                    <Input id="stock" type="number" placeholder="10" value={newProduct.stockActuel} onChange={(e) => setNewProduct({ ...newProduct, stockActuel: e.target.value })} className="mt-1.5" />
-                  </div>
-                )}
+                <div className="p-3 rounded-xl bg-primary/10 border border-primary/20">
+                  <p className="text-xs text-primary font-medium">🔒 Le stock initial sera défini par le propriétaire via un réapprovisionnement. Le gérant devra confirmer la réception.</p>
+                </div>
                 <Button onClick={handleAddProduct} disabled={addProduit.isPending} className="w-full h-12 bg-success hover:bg-success/90 text-success-foreground">
                   {addProduit.isPending ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
                   Ajouter le produit
