@@ -1,7 +1,8 @@
-import { LayoutDashboard, Receipt, Package, BookOpen, Wallet, LogOut, BarChart3, CreditCard } from "lucide-react";
+import { LayoutDashboard, Receipt, Package, BookOpen, Wallet, LogOut, BarChart3, CreditCard, Network } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import logo from "@/assets/logo.jpg";
 import { useAuth } from "@/hooks/useAuth";
+import { useUserRole } from "@/hooks/useUserRole";
 import { cn } from "@/lib/utils";
 import {
   Sidebar,
@@ -17,13 +18,17 @@ import {
 } from "@/components/ui/sidebar";
 import { NavLink } from "@/components/NavLink";
 
-const navItems = [
+const baseNavItems = [
   { icon: LayoutDashboard, label: "Ma Boutique", path: "/" },
   { icon: Receipt, label: "Nouvelle Vente", path: "/ventes" },
   { icon: Package, label: "Stock", path: "/articles" },
   { icon: BookOpen, label: "Dettes", path: "/dettes" },
   { icon: Wallet, label: "Dépenses", path: "/depenses" },
   { icon: BarChart3, label: "Statistiques", path: "/stats" },
+];
+
+const proprietaireOnlyItems = [
+  { icon: Network, label: "Mon Réseau", path: "/dashboard-proprietaire" },
   { icon: CreditCard, label: "Abonnement", path: "/abonnement" },
 ];
 
