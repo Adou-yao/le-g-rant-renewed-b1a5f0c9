@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, ImagePlus, X } from "lucide-react";
+import { CountryCodeSelect } from "@/components/ui/CountryCodeSelect";
 import type { Shop } from "@/hooks/useShops";
 
 const COMMERCE_TYPES = [
@@ -30,6 +31,7 @@ interface ShopFormModalProps {
 export function ShopFormModal({ open, onOpenChange, onSubmit, isSubmitting, editShop }: ShopFormModalProps) {
   const [nom, setNom] = useState("");
   const [localisation, setLocalisation] = useState("");
+  const [countryCode, setCountryCode] = useState("+225");
   const [whatsapp, setWhatsapp] = useState("");
   const [typeCommerce, setTypeCommerce] = useState("Autre");
   const [logoFile, setLogoFile] = useState<File | null>(null);
@@ -40,13 +42,23 @@ export function ShopFormModal({ open, onOpenChange, onSubmit, isSubmitting, edit
     if (editShop) {
       setNom(editShop.nom);
       setLocalisation(editShop.localisation);
-      setWhatsapp(editShop.whatsapp);
+      // Parse existing whatsapp to extract country code
+      const existingWa = editShop.whatsapp || "";
+      const matchedCode = ["+225","+223","+226","+228","+229","+221","+224","+227","+233","+234","+237","+241","+242","+243","+33","+1"].find(c => existingWa.startsWith(c));
+      if (matchedCode) {
+        setCountryCode(matchedCode);
+        setWhatsapp(existingWa.slice(matchedCode.length));
+      } else {
+        setCountryCode("+225");
+        setWhatsapp(existingWa);
+      }
       setTypeCommerce(editShop.type_commerce);
       setLogoPreview(editShop.logo_url || null);
       setLogoFile(null);
     } else {
       setNom("");
       setLocalisation("");
+      setCountryCode("+225");
       setWhatsapp("");
       setTypeCommerce("Autre");
       setLogoPreview(null);
@@ -76,7 +88,7 @@ export function ShopFormModal({ open, onOpenChange, onSubmit, isSubmitting, edit
     await onSubmit({
       nom: nom.trim(),
       localisation: localisation.trim(),
-      whatsapp: whatsapp.trim(),
+      whatsapp: `${countryCode}${whatsapp.trim()}`,
       type_commerce: typeCommerce,
       logoFile,
     });
@@ -140,7 +152,10 @@ export function ShopFormModal({ open, onOpenChange, onSubmit, isSubmitting, edit
           </div>
           <div className="space-y-2">
             <Label htmlFor="shop-wa">Numéro WhatsApp</Label>
-            <Input id="shop-wa" type="tel" placeholder="Ex: +225 07 00 00 00 00" value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} required maxLength={20} />
+            <div className="flex">
+              <CountryCodeSelect value={countryCode} onChange={setCountryCode} />
+              <Input id="shop-wa" type="tel" placeholder="07 00 00 00 00" value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} required className="rounded-l-none h-12" maxLength={15} />
+            </div>
           </div>
           <div className="space-y-2">
             <Label>Type de commerce</Label>
