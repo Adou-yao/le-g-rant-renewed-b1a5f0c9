@@ -345,42 +345,101 @@ export default function DashboardSuperviseur() {
           </ChartContainer>
         </CardContent>
       </Card>
+      {/* Full Stock Table with Restock + Delivery Status */}
+      <Card className="border-border/50 shadow-sm">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-base">
+            <PackagePlus className="h-4 w-4 text-primary" />
+            Stocks &amp; Réapprovisionnement
+            {lowStockProduits.length > 0 && (
+              <Badge variant="destructive" className="text-[10px] px-1.5 py-0">
+                {lowStockProduits.length} alerte{lowStockProduits.length > 1 ? "s" : ""}
+              </Badge>
+            )}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {filteredProduits.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-6">Aucun produit trouvé.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Produit</TableHead>
+                    <TableHead>Boutique</TableHead>
+                    <TableHead className="text-center">Stock</TableHead>
+                    <TableHead className="text-center">Statut Livraison</TableHead>
+                    <TableHead className="text-right">Action</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredProduits.map((p) => {
+                    const manager = managers.find((m) => m.manager_id === p.user_id);
+                    const pendingTransfer = ownerTransfers.find(
+                      (t) => t.produit_id === p.id && t.statut === "en_attente"
+                    );
+                    const lastConfirmed = ownerTransfers.find(
+                      (t) => t.produit_id === p.id && t.statut === "reçu"
+                    );
+                    return (
+                      <TableRow key={p.id}>
+                        <TableCell>
+                          <div>
+                            <p className="text-sm font-medium">{p.nom}</p>
+                            <p className="text-xs text-muted-foreground">{formatCurrency(p.prix_vente)}</p>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="outline" className="text-xs">{getShopFromManager(p.user_id)}</Badge>
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Badge variant={p.stock_actuel < 5 ? "destructive" : "secondary"}>
+                            {p.stock_actuel}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {pendingTransfer ? (
+                            <Badge variant="outline" className="text-xs border-yellow-500 text-yellow-600">
+                              ⏳ En attente ({pendingTransfer.quantite})
+                            </Badge>
+                          ) : lastConfirmed ? (
+                            <Badge variant="outline" className="text-xs border-green-500 text-green-600">
+                              ✓ Reçu
+                            </Badge>
+                          ) : (
+                            <span className="text-xs text-muted-foreground">—</span>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={!!pendingTransfer || !manager}
+                            onClick={() =>
+                              setRestockProduct({
+                                ...p,
+                                managerId: manager?.manager_id,
+                                shopId: manager?.shop_id,
+                              })
+                            }
+                            className="text-xs"
+                          >
+                            <PackagePlus className="h-3.5 w-3.5 mr-1" />
+                            Réapprovisionner
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       <div className="grid md:grid-cols-2 gap-4">
-        {/* Low Stock Alerts */}
-        <Card className="border-border/50 shadow-sm">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-base">
-              <PackageX className="h-4 w-4 text-destructive" />
-              Alertes Stocks
-              {lowStockProduits.length > 0 && (
-                <Badge variant="destructive" className="text-[10px] px-1.5 py-0">
-                  {lowStockProduits.length}
-                </Badge>
-              )}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {lowStockProduits.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-6">Tous les stocks sont suffisants ✓</p>
-            ) : (
-              <div className="space-y-2 max-h-[300px] overflow-y-auto">
-                {lowStockProduits.map((p) => (
-                  <div key={p.id} className="flex items-center justify-between p-2.5 rounded-lg bg-destructive/5 border border-destructive/10">
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium truncate">{p.nom}</p>
-                      <p className="text-xs text-muted-foreground">{getShopFromManager(p.user_id)}</p>
-                    </div>
-                    <Badge variant="destructive" className="shrink-0 ml-2">
-                      {p.stock_actuel} restant{p.stock_actuel > 1 ? "s" : ""}
-                    </Badge>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
         {/* Staff Status */}
         <Card className="border-border/50 shadow-sm">
           <CardHeader className="pb-3">
@@ -422,6 +481,18 @@ export default function DashboardSuperviseur() {
         <ShieldCheck className="h-3.5 w-3.5" />
         <span>Données certifiées et protégées contre toute modification manuelle</span>
       </div>
+
+      {/* Restock Modal */}
+      {restockProduct && user && (
+        <ReapprovisionnementModal
+          open={!!restockProduct}
+          onOpenChange={(open) => !open && setRestockProduct(null)}
+          produit={restockProduct}
+          ownerId={user.id}
+          managerId={restockProduct.managerId}
+          shopId={restockProduct.shopId}
+        />
+      )}
     </div>
   );
 }
