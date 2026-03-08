@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, MessageCircle, Copy, Check } from "lucide-react";
+import { CountryCodeSelect } from "@/components/ui/CountryCodeSelect";
 import type { Shop } from "@/hooks/useShops";
 
 interface ManagerFormModalProps {
