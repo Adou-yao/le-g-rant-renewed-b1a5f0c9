@@ -83,6 +83,89 @@ export type Database = {
         }
         Relationships: []
       }
+      inventaire_items: {
+        Row: {
+          created_at: string
+          ecart: number | null
+          id: string
+          inventaire_id: string
+          produit_id: string
+          stock_physique: number
+          stock_theorique: number
+        }
+        Insert: {
+          created_at?: string
+          ecart?: number | null
+          id?: string
+          inventaire_id: string
+          produit_id: string
+          stock_physique: number
+          stock_theorique: number
+        }
+        Update: {
+          created_at?: string
+          ecart?: number | null
+          id?: string
+          inventaire_id?: string
+          produit_id?: string
+          stock_physique?: number
+          stock_theorique?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventaire_items_inventaire_id_fkey"
+            columns: ["inventaire_id"]
+            isOneToOne: false
+            referencedRelation: "inventaires"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventaire_items_produit_id_fkey"
+            columns: ["produit_id"]
+            isOneToOne: false
+            referencedRelation: "produits"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventaires: {
+        Row: {
+          created_at: string
+          id: string
+          manager_id: string
+          notes: string | null
+          owner_id: string
+          shop_id: string
+          statut: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          manager_id: string
+          notes?: string | null
+          owner_id: string
+          shop_id: string
+          statut?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          manager_id?: string
+          notes?: string | null
+          owner_id?: string
+          shop_id?: string
+          statut?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventaires_shop_id_fkey"
+            columns: ["shop_id"]
+            isOneToOne: false
+            referencedRelation: "shops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       produits: {
         Row: {
           categorie: string | null
