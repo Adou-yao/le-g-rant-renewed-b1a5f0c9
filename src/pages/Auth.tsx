@@ -16,7 +16,7 @@ export default function Auth() {
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [storeName, setStoreName] = useState("");
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { signIn, signUp, resetPassword, user, loading } = useAuth();
   const navigate = useNavigate();
