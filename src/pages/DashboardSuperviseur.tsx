@@ -30,8 +30,10 @@ import {
   ShieldCheck,
   Clock,
   PackagePlus,
+  Plus,
 } from "lucide-react";
 import { ReapprovisionnementModal } from "@/components/ReapprovisionnementModal";
+import { CreateProductModal } from "@/components/CreateProductModal";
 import { useOwnerTransfers } from "@/hooks/useStockTransfers";
 import { InventaireReports } from "@/components/InventaireReports";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -77,6 +79,7 @@ export default function DashboardSuperviseur() {
   const { managers } = useManagers();
   const [selectedShop, setSelectedShop] = useState<string>("all");
   const [restockProduct, setRestockProduct] = useState<any>(null);
+  const [showCreateProduct, setShowCreateProduct] = useState(false);
 
   const { data: ownerTransfers = [] } = useOwnerTransfers();
   const managerIds = useMemo(() => managers.map((m) => m.manager_id), [managers]);
@@ -374,6 +377,10 @@ export default function DashboardSuperviseur() {
                 {lowStockProduits.length} alerte{lowStockProduits.length > 1 ? "s" : ""}
               </Badge>
             )}
+            <Button size="sm" variant="outline" className="ml-auto text-xs" onClick={() => setShowCreateProduct(true)}>
+              <Plus className="h-3.5 w-3.5 mr-1" />
+              Nouveau Produit
+            </Button>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -514,6 +521,14 @@ export default function DashboardSuperviseur() {
           shopId={restockProduct.shopId}
         />
       )}
+
+      {/* Create Product Modal */}
+      <CreateProductModal
+        open={showCreateProduct}
+        onOpenChange={setShowCreateProduct}
+        managers={managers}
+        shops={shops}
+      />
     </div>
   );
 }
