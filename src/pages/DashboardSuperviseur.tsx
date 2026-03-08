@@ -499,6 +499,10 @@ export default function DashboardSuperviseur() {
         <span>Données certifiées et protégées contre toute modification manuelle</span>
       </div>
 
+          </TabsContent>
+        </Tabs>
+      </div>
+
       {/* Restock Modal */}
       {restockProduct && user && (
         <ReapprovisionnementModal
