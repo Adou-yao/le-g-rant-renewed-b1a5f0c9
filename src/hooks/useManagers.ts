@@ -45,6 +45,34 @@ export function useManagers() {
         body: payload,
       });
       if (error) {
+        // For FunctionsHttpError, the context contains the response body
+        let msg = "Erreur lors de la création du gérant";
+        try {
+          if (error.context && typeof error.context === 'object' && 'json' in error.context) {
+            const body = await (error.context as Response).json();
+            msg = body?.error || msg;
+          } else {
+            msg = error.message || msg;
+          }
+        } catch { /* use default msg */ }
+        throw new Error(msg);
+      }
+      if (data?.error) throw new Error(data.error);
+      return data;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["managers"] }),
+  });
+    mutationFn: async (payload: {
+      full_name: string;
+      whatsapp: string;
+      email: string;
+      password: string;
+      shop_id: string;
+    }) => {
+      const { data, error } = await supabase.functions.invoke("create-manager", {
+        body: payload,
+      });
+      if (error) {
         // Try to parse the error body for a user-friendly message
         try {
           const body = JSON.parse(error.message || "{}");
