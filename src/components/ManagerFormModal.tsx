@@ -34,6 +34,7 @@ export function ManagerFormModal({ open, onOpenChange, onSubmit, isSubmitting, s
 
   const resetForm = () => {
     setFullName("");
+    setCountryCode("+225");
     setWhatsapp("");
     setEmail("");
     setPassword("");
