@@ -45,24 +45,24 @@ export function useManagers() {
         body: payload,
       });
       if (error) {
-        // For FunctionsHttpError, the context contains the response body
         let msg = "Erreur lors de la création du gérant";
         try {
-          if (error.context && typeof error.context === 'object' && 'json' in error.context) {
+          if (error.context && typeof error.context === "object" && "json" in error.context) {
             const body = await (error.context as Response).json();
             msg = body?.error || msg;
           } else {
             msg = error.message || msg;
           }
-        } catch { /* use default msg */ }
+        } catch {
+          /* use default msg */
+        }
         throw new Error(msg);
       }
       if (data?.error) throw new Error(data.error);
       return data;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["managers"] }),
-
-
+  });
 
   const toggleManagerActive = useMutation({
     mutationFn: async ({ id, is_active }: { id: string; is_active: boolean }) => {
