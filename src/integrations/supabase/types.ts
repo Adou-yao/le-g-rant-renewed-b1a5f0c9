@@ -173,6 +173,39 @@ export type Database = {
         }
         Relationships: []
       }
+      shops: {
+        Row: {
+          created_at: string
+          id: string
+          localisation: string
+          nom: string
+          type_commerce: string
+          updated_at: string
+          user_id: string
+          whatsapp: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          localisation?: string
+          nom: string
+          type_commerce?: string
+          updated_at?: string
+          user_id: string
+          whatsapp?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          localisation?: string
+          nom?: string
+          type_commerce?: string
+          updated_at?: string
+          user_id?: string
+          whatsapp?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
