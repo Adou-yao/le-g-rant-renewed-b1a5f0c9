@@ -16,7 +16,7 @@ export default function Auth() {
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [storeName, setStoreName] = useState("");
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { signIn, signUp, resetPassword, user, loading } = useAuth();
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ export default function Auth() {
   const validateForm = (): boolean => {
     try { emailSchema.parse(email); } catch { toast.error("Veuillez entrer un email valide"); return false; }
     try { passwordSchema.parse(password); } catch { toast.error("Le mot de passe doit contenir au moins 6 caractères"); return false; }
-    if (!isLogin && !storeName.trim()) { toast.error("Veuillez entrer le nom de votre boutique"); return false; }
+    
     return true;
   };
 
@@ -53,7 +53,7 @@ export default function Auth() {
         if (error) toast.error(error.message.includes("Invalid login credentials") ? "Email ou mot de passe incorrect" : error.message);
         else toast.success("Connexion réussie !");
       } else {
-        const { error } = await signUp(email, password, storeName);
+        const { error } = await signUp(email, password);
         if (error) toast.error(error.message.includes("already registered") ? "Cet email est déjà utilisé" : error.message);
         else { toast.success("Un code de vérification a été envoyé à votre email"); navigate("/verify", { state: { email } }); }
       }
@@ -120,15 +120,6 @@ export default function Auth() {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-5">
-                {!isLogin && (
-                  <div className="space-y-2 animate-fade-in">
-                    <Label htmlFor="storeName" className="text-sm font-medium">Nom de la boutique</Label>
-                    <div className="relative">
-                      <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                      <Input id="storeName" type="text" placeholder="Ma Boutique" value={storeName} onChange={(e) => setStoreName(e.target.value)} className="pl-12 h-14 rounded-2xl border-border/50 bg-background/50 focus:bg-background transition-all focus:shadow-lg focus:shadow-primary/10" />
-                    </div>
-                  </div>
-                )}
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-sm font-medium">Email</Label>
                   <div className="relative">
