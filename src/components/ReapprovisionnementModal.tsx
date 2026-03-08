@@ -35,6 +35,7 @@ export function ReapprovisionnementModal({ open, onOpenChange, produit, ownerId,
         shop_id: shopId,
         quantite: qty,
         nouveau_prix_achat: nouveauPrix ? parseFloat(nouveauPrix) : null,
+        source: "reapprovisionnement",
       });
       toast.success("Réapprovisionnement envoyé ! En attente de confirmation du gérant.");
       setQuantite("");

@@ -419,11 +419,11 @@ export default function DashboardSuperviseur() {
                         <TableCell className="text-center">
                           {pendingTransfer ? (
                             <Badge variant="outline" className="text-xs border-yellow-500 text-yellow-600">
-                              ⏳ En attente ({pendingTransfer.quantite})
+                              ⏳ {pendingTransfer.source === 'initial' ? 'Stock initial' : 'Réappro.'} en attente ({pendingTransfer.quantite})
                             </Badge>
                           ) : lastConfirmed ? (
                             <Badge variant="outline" className="text-xs border-green-500 text-green-600">
-                              ✓ Reçu
+                              ✓ {lastConfirmed.source === 'initial' ? 'Initial reçu' : 'Reçu'}
                             </Badge>
                           ) : (
                             <span className="text-xs text-muted-foreground">—</span>

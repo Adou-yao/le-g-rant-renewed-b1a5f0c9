@@ -32,7 +32,7 @@ export default function Articles() {
         nom: newProduct.nom,
         prix_achat: parseInt(newProduct.prixAchat),
         prix_vente: parseInt(newProduct.prixVente),
-        stock_actuel: parseInt(newProduct.stockActuel) || 0,
+        stock_actuel: 0,
       });
       toast.success("Produit ajouté !");
       setNewProduct({ nom: "", prixAchat: "", prixVente: "", stockActuel: "" });
