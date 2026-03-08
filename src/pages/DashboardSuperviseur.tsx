@@ -9,6 +9,7 @@ import { StatCard } from "@/components/ui/StatCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   ChartContainer,
@@ -28,7 +29,10 @@ import {
   PackageX,
   ShieldCheck,
   Clock,
+  PackagePlus,
 } from "lucide-react";
+import { ReapprovisionnementModal } from "@/components/ReapprovisionnementModal";
+import { useOwnerTransfers } from "@/hooks/useStockTransfers";
 
 interface ManagerVente {
   id: string;
