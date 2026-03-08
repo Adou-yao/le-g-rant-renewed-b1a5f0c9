@@ -64,14 +64,6 @@ export default function Dashboard() {
               Tableau de bord en temps réel
             </p>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleSignOut}
-            className="rounded-2xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 mt-2 h-11 w-11 glass"
-          >
-            <LogOut className="h-5 w-5" />
-          </Button>
         </div>
       </header>
 
