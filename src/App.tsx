@@ -38,6 +38,7 @@ const App = () => (
           <Route path="/stats" element={<ProtectedRoute><AppLayout><Stats /></AppLayout></ProtectedRoute>} />
           <Route path="/abonnement" element={<RoleProtectedRoute allowedRoles={["proprietaire"]}><AppLayout><Abonnement /></AppLayout></RoleProtectedRoute>} />
           <Route path="/dashboard-proprietaire" element={<RoleProtectedRoute allowedRoles={["proprietaire"]}><AppLayout><DashboardProprietaire /></AppLayout></RoleProtectedRoute>} />
+          <Route path="/changement-obligatoire" element={<ProtectedRoute><ChangementObligatoire /></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
