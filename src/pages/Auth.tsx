@@ -28,7 +28,7 @@ export default function Auth() {
   const validateForm = (): boolean => {
     try { emailSchema.parse(email); } catch { toast.error("Veuillez entrer un email valide"); return false; }
     try { passwordSchema.parse(password); } catch { toast.error("Le mot de passe doit contenir au moins 6 caractères"); return false; }
-    if (!isLogin && !storeName.trim()) { toast.error("Veuillez entrer le nom de votre boutique"); return false; }
+    
     return true;
   };
 
