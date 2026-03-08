@@ -38,6 +38,11 @@ export function AppSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { signOut } = useAuth();
+  const { isProprietaire } = useUserRole();
+
+  const navItems = isProprietaire
+    ? [...baseNavItems, ...proprietaireOnlyItems]
+    : baseNavItems;
 
   const handleLogout = async () => {
     await signOut();
