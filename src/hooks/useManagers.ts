@@ -61,32 +61,8 @@ export function useManagers() {
       return data;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["managers"] }),
-  });
-    mutationFn: async (payload: {
-      full_name: string;
-      whatsapp: string;
-      email: string;
-      password: string;
-      shop_id: string;
-    }) => {
-      const { data, error } = await supabase.functions.invoke("create-manager", {
-        body: payload,
-      });
-      if (error) {
-        // Try to parse the error body for a user-friendly message
-        try {
-          const body = JSON.parse(error.message || "{}");
-          throw new Error(body.error || error.message);
-        } catch (e) {
-          if (e instanceof Error && e.message !== error.message) throw e;
-          throw new Error(error.message || "Erreur lors de la création du gérant");
-        }
-      }
-      if (data?.error) throw new Error(data.error);
-      return data;
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["managers"] }),
-  });
+
+
 
   const toggleManagerActive = useMutation({
     mutationFn: async ({ id, is_active }: { id: string; is_active: boolean }) => {
