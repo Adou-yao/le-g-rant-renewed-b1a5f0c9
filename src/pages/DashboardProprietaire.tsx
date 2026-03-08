@@ -13,13 +13,14 @@ export default function DashboardProprietaire() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingShop, setEditingShop] = useState<Shop | null>(null);
 
-  const handleSubmit = async (data: { nom: string; localisation: string; whatsapp: string; type_commerce: string }) => {
+  const handleSubmit = async (data: { nom: string; localisation: string; whatsapp: string; type_commerce: string; logoFile?: File | null }) => {
     try {
+      const { logoFile, ...rest } = data;
       if (editingShop) {
-        await updateShop.mutateAsync({ id: editingShop.id, ...data });
+        await updateShop.mutateAsync({ id: editingShop.id, logoFile, ...rest });
         toast.success("Boutique modifiée avec succès !");
       } else {
-        await addShop.mutateAsync(data);
+        await addShop.mutateAsync({ ...rest, logo_url: null, logoFile });
         toast.success("Félicitations ! Votre nouvelle boutique est prête à enregistrer des ventes 🎉");
       }
       setModalOpen(false);
@@ -73,12 +74,22 @@ export default function DashboardProprietaire() {
               {shops.map((shop) => (
                 <Card key={shop.id} className="border-border/40 bg-muted/30 hover:shadow-md transition-shadow">
                   <CardContent className="p-4 space-y-3">
-                    <div>
-                      <h3 className="font-semibold text-foreground text-base leading-tight">{shop.nom}</h3>
-                      <span className="inline-flex items-center gap-1 mt-1 text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded-full">
-                        <Tag className="h-3 w-3" />
-                        {shop.type_commerce}
-                      </span>
+                    <div className="flex items-start gap-3">
+                      {/* Shop logo */}
+                      <div className="h-12 w-12 shrink-0 rounded-xl overflow-hidden bg-primary/10 flex items-center justify-center">
+                        {shop.logo_url ? (
+                          <img src={shop.logo_url} alt={shop.nom} className="h-full w-full object-cover" />
+                        ) : (
+                          <Store className="h-6 w-6 text-primary/50" />
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="font-semibold text-foreground text-base leading-tight truncate">{shop.nom}</h3>
+                        <span className="inline-flex items-center gap-1 mt-1 text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded-full">
+                          <Tag className="h-3 w-3" />
+                          {shop.type_commerce}
+                        </span>
+                      </div>
                     </div>
                     <div className="space-y-1.5 text-sm text-muted-foreground">
                       <div className="flex items-center gap-2">
