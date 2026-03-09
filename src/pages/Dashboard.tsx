@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { TrendingUp, Wallet, AlertTriangle, Package, Loader2, LogOut, ArrowDownCircle, Banknote, Smartphone, ChevronRight, Zap } from "lucide-react";
+import { TrendingUp, AlertTriangle, Package, Loader2, LogOut, ArrowDownCircle, Banknote, Smartphone, ChevronRight, Zap } from "lucide-react";
 import { StatCard } from "@/components/ui/StatCard";
 import { Button } from "@/components/ui/button";
 import { useProduits } from "@/hooks/useProduits";
@@ -7,7 +7,7 @@ import { useVentes } from "@/hooks/useVentes";
 import { useDepenses } from "@/hooks/useDepenses";
 import { useAuth } from "@/hooks/useAuth";
 import { useOwnerSubscription } from "@/hooks/useOwnerSubscription";
-import { calculateDailyStats, getWeeklySalesData, getLowStockProduits } from "@/lib/statsHelpers";
+import { getWeeklySalesData, getLowStockProduits } from "@/lib/statsHelpers";
 import { toast } from "sonner";
 import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
 import { useNavigate } from "react-router-dom";
@@ -22,9 +22,12 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   const today = new Date().toISOString().split("T")[0];
-  const stats = useMemo(() => calculateDailyStats(ventes, produits), [ventes, produits]);
+  // Only calculate revenue for managers (no profit)
+  const ventesJour = useMemo(() => 
+    ventes.filter((v) => v.date_vente.startsWith(today)).reduce((sum, v) => sum + v.montant_total, 0), 
+    [ventes, today]
+  );
   const depensesJour = useMemo(() => depenses.filter((d) => d.date_depense.startsWith(today)).reduce((sum, d) => sum + d.montant, 0), [depenses, today]);
-  const beneficeReel = stats.beneficeNet - depensesJour;
   const cashBalance = useMemo(() => ventes.filter((v) => v.date_vente.startsWith(today) && v.mode_paiement === "Espèce").reduce((sum, v) => sum + v.montant_total, 0) - depensesJour, [ventes, depensesJour, today]);
   const mobileBalance = useMemo(() => ventes.filter((v) => v.date_vente.startsWith(today) && v.mode_paiement !== "Espèce").reduce((sum, v) => sum + v.montant_total, 0), [ventes, today]);
   const weeklyData = useMemo(() => getWeeklySalesData(ventes), [ventes]);
