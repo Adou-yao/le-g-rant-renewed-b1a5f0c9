@@ -44,7 +44,12 @@ export default function DashboardProprietaire() {
         toast.success("Boutique modifiée avec succès !");
       } else {
         await addShop.mutateAsync({ ...rest, logo_url: null, logoFile });
-        toast.success("Félicitations ! Votre nouvelle boutique est prête à enregistrer des ventes 🎉");
+        const isFirstShop = shops.length === 0;
+        if (isFirstShop) {
+          toast.success("Félicitations ! Votre première boutique bénéficie de 30 jours d'essai gratuit 🎉");
+        } else {
+          toast.info("Boutique créée. Votre essai gratuit a été utilisé pour votre première boutique. Un abonnement est requis pour activer celle-ci.", { duration: 8000 });
+        }
       }
       setModalOpen(false);
       setEditingShop(null);
