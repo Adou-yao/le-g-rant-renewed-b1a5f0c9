@@ -77,7 +77,7 @@ export default function Ventes() {
     <div className="pb-24 animate-fade-in">
       <PageHeader title="Nouvelle Vente" subtitle="Sélectionne un produit pour commencer" />
       {isProprietaire && <SupervisionBadge />}
-      {isGerant && ownerExpired && <SubscriptionExpiredBanner />}
+      {isGerant && isReadOnly && <SubscriptionExpiredBanner />}
       {top5Products.length > 0 && (<div className="px-4 mb-6"><div className="flex items-center gap-2 mb-3"><Star className="h-5 w-5 text-warning" /><h3 className="text-sm font-bold text-foreground">Top 5 des ventes</h3></div><div className="grid gap-3">{top5Products.map((p) => (<ProductCard key={p.id} name={p.nom} prixAchat={0} prixVente={p.prix_vente} stock={p.stock_actuel} selected={selectedProduct === p.id} onSelect={() => setSelectedProduct(p.id)} />))}</div></div>)}
       {otherProducts.length > 0 && (<div className="px-4 mb-6">{top5Products.length > 0 && <h3 className="text-sm font-bold text-foreground mb-3">Autres articles</h3>}<div className="grid gap-3">{otherProducts.map((p) => (<ProductCard key={p.id} name={p.nom} prixAchat={0} prixVente={p.prix_vente} stock={p.stock_actuel} selected={selectedProduct === p.id} onSelect={() => setSelectedProduct(p.id)} />))}</div></div>)}
       {produit && (
