@@ -28,8 +28,9 @@ export default function DashboardProprietaire() {
     return Math.ceil((end.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
   };
 
-  const getShopStatus = (shop: Shop): "trial" | "active" | "expired" => {
+  const getShopStatus = (shop: Shop): "trial" | "active" | "expired" | "pending_payment" => {
     if (shop.subscription_status === "active") return "active";
+    if (shop.subscription_status === "pending_payment") return "pending_payment";
     const days = getShopTrialDays(shop);
     if (days !== null && days <= 0) return "expired";
     return "trial";
@@ -43,7 +44,12 @@ export default function DashboardProprietaire() {
         toast.success("Boutique modifiée avec succès !");
       } else {
         await addShop.mutateAsync({ ...rest, logo_url: null, logoFile });
-        toast.success("Félicitations ! Votre nouvelle boutique est prête à enregistrer des ventes 🎉");
+        const isFirstShop = shops.length === 0;
+        if (isFirstShop) {
+          toast.success("Félicitations ! Votre première boutique bénéficie de 30 jours d'essai gratuit 🎉");
+        } else {
+          toast.info("Boutique créée. Votre essai gratuit a été utilisé pour votre première boutique. Un abonnement est requis pour activer celle-ci.", { duration: 8000 });
+        }
       }
       setModalOpen(false);
       setEditingShop(null);
@@ -142,7 +148,12 @@ export default function DashboardProprietaire() {
                     </div>
 
                     {/* Trial / Subscription status */}
-                    {status === "expired" ? (
+                    {status === "pending_payment" ? (
+                      <div className="flex items-center gap-2 p-2 rounded-lg bg-warning/10 text-warning text-xs font-medium">
+                        <CreditCard className="h-3.5 w-3.5" />
+                        <span>En attente de paiement</span>
+                      </div>
+                    ) : status === "expired" ? (
                       <div className="flex items-center gap-2 p-2 rounded-lg bg-destructive/10 text-destructive text-xs font-medium">
                         <Clock className="h-3.5 w-3.5" />
                         <span>Essai expiré</span>
@@ -171,10 +182,10 @@ export default function DashboardProprietaire() {
                     </div>
 
                     <div className="flex gap-2 pt-1">
-                      {status === "expired" ? (
+                      {status === "pending_payment" || status === "expired" ? (
                         <Button size="sm" variant="default" className="flex-1 gap-1.5 text-xs" onClick={() => navigate(`/abonnement?shop=${shop.id}`)}>
                           <CreditCard className="h-3.5 w-3.5" />
-                          Activer l'abonnement
+                          Payer l'abonnement
                         </Button>
                       ) : trialDays !== null && trialDays <= 5 ? (
                         <>

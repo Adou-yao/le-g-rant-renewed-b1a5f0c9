@@ -64,6 +64,11 @@ export function useSubscription(): SubscriptionState {
           return;
         }
 
+        if (s.subscription_status === "pending_payment") {
+          setState({ isLoading: false, isReadOnly: true, daysLeft: 0, subscriptionStatus: "expired" });
+          return;
+        }
+
         if (s.date_fin_essai) {
           const days = Math.ceil((new Date(s.date_fin_essai).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
           if (days > 0) {
