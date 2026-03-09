@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { ClipboardCheck, Loader2, Send, Package } from "lucide-react";
+import { ClipboardCheck, Loader2, Send, Package, AlertTriangle } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,9 +9,11 @@ import { Badge } from "@/components/ui/badge";
 import { useProduits } from "@/hooks/useProduits";
 import { useSubmitInventaire } from "@/hooks/useInventaires";
 import { useAuth } from "@/hooks/useAuth";
+import { useOwnerSubscription } from "@/hooks/useOwnerSubscription";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { SubscriptionExpiredBanner } from "@/components/ui/SubscriptionExpiredBanner";
 
 export default function FaireInventaire() {
   const { user } = useAuth();
