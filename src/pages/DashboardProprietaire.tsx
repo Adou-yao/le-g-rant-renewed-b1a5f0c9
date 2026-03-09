@@ -17,9 +17,23 @@ import { useNavigate } from "react-router-dom";
 export default function DashboardProprietaire() {
   const { shops, isLoading, addShop, updateShop } = useShops();
   const { managers, isLoading: managersLoading, createManager, toggleManagerActive, deleteManager } = useManagers();
+  const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
   const [editingShop, setEditingShop] = useState<Shop | null>(null);
   const [managerModalOpen, setManagerModalOpen] = useState(false);
+
+  const getShopTrialDays = (shop: Shop): number | null => {
+    if (!shop.date_fin_essai) return null;
+    const end = new Date(shop.date_fin_essai);
+    return Math.ceil((end.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+  };
+
+  const getShopStatus = (shop: Shop): "trial" | "active" | "expired" => {
+    if (shop.subscription_status === "active") return "active";
+    const days = getShopTrialDays(shop);
+    if (days !== null && days <= 0) return "expired";
+    return "trial";
+  };
 
   const handleSubmit = async (data: { nom: string; localisation: string; whatsapp: string; type_commerce: string; logoFile?: File | null }) => {
     try {
