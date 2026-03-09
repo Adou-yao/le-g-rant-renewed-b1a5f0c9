@@ -177,10 +177,10 @@ export default function DashboardProprietaire() {
                     </div>
 
                     <div className="flex gap-2 pt-1">
-                      {status === "expired" ? (
+                      {status === "pending_payment" || status === "expired" ? (
                         <Button size="sm" variant="default" className="flex-1 gap-1.5 text-xs" onClick={() => navigate(`/abonnement?shop=${shop.id}`)}>
                           <CreditCard className="h-3.5 w-3.5" />
-                          Activer l'abonnement
+                          Payer l'abonnement
                         </Button>
                       ) : trialDays !== null && trialDays <= 5 ? (
                         <>
