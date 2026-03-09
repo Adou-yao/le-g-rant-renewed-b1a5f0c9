@@ -99,6 +99,8 @@ export default function FaireInventaire() {
         subtitle="Compte chaque produit physiquement"
       />
 
+      {ownerExpired && <SubscriptionExpiredBanner />}
+
       <div className="px-4 space-y-3">
         <Card className="border-primary/20 bg-primary/5">
           <CardContent className="p-4">
