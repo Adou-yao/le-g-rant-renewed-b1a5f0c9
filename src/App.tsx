@@ -39,7 +39,7 @@ const App = () => (
           <Route path="/articles" element={<GerantOnlyRoute><AppLayout><Articles /></AppLayout></GerantOnlyRoute>} />
           <Route path="/dettes" element={<GerantOnlyRoute><AppLayout><Dettes /></AppLayout></GerantOnlyRoute>} />
           <Route path="/depenses" element={<GerantOnlyRoute><AppLayout><Depenses /></AppLayout></GerantOnlyRoute>} />
-          <Route path="/stats" element={<GerantOnlyRoute><AppLayout><Stats /></AppLayout></GerantOnlyRoute>} />
+          <Route path="/stats" element={<RoleProtectedRoute allowedRoles={["proprietaire"]}><AppLayout><Stats /></AppLayout></RoleProtectedRoute>} />
           <Route path="/faire-inventaire" element={<GerantOnlyRoute><AppLayout><FaireInventaire /></AppLayout></GerantOnlyRoute>} />
           {/* Proprietaire only */}
           <Route path="/abonnement" element={<RoleProtectedRoute allowedRoles={["proprietaire"]}><AppLayout><Abonnement /></AppLayout></RoleProtectedRoute>} />

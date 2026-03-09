@@ -1,4 +1,4 @@
-import { Home, ShoppingCart, Package, BookOpen, Wallet, LayoutDashboard, Network, CreditCard, ClipboardCheck, LucideIcon } from "lucide-react";
+import { Home, ShoppingCart, Package, BookOpen, Wallet, LayoutDashboard, Network, CreditCard, ClipboardCheck, BarChart3, LucideIcon } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -20,6 +20,7 @@ const gerantItems: NavItem[] = [
 const proprietaireItems: NavItem[] = [
   { icon: LayoutDashboard, label: "Supervision", path: "/dashboard-superviseur" },
   { icon: Network, label: "Réseau", path: "/dashboard-proprietaire" },
+  { icon: BarChart3, label: "Stats", path: "/stats" },
   { icon: CreditCard, label: "Abonnement", path: "/abonnement" },
 ];
 
