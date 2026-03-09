@@ -20,6 +20,7 @@ const gerantItems: NavItem[] = [
 const proprietaireItems: NavItem[] = [
   { icon: LayoutDashboard, label: "Supervision", path: "/dashboard-superviseur" },
   { icon: Network, label: "Réseau", path: "/dashboard-proprietaire" },
+  { icon: BarChart3, label: "Stats", path: "/stats" },
   { icon: CreditCard, label: "Abonnement", path: "/abonnement" },
 ];
 
