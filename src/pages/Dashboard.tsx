@@ -6,10 +6,12 @@ import { useProduits } from "@/hooks/useProduits";
 import { useVentes } from "@/hooks/useVentes";
 import { useDepenses } from "@/hooks/useDepenses";
 import { useAuth } from "@/hooks/useAuth";
+import { useOwnerSubscription } from "@/hooks/useOwnerSubscription";
 import { calculateDailyStats, getWeeklySalesData, getLowStockProduits } from "@/lib/statsHelpers";
 import { toast } from "sonner";
 import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
 import { useNavigate } from "react-router-dom";
+import { SubscriptionExpiredBanner } from "@/components/ui/SubscriptionExpiredBanner";
 
 export default function Dashboard() {
   const { signOut, user } = useAuth();
