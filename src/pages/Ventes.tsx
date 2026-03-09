@@ -24,7 +24,10 @@ export default function Ventes() {
   const { isReadOnly } = useSubscription();
   const { isProprietaire, isGerant } = useUserRole();
   const { isExpired: ownerExpired } = useOwnerSubscription();
-  const addVente = useAddVente();
+  const { data: ventes = [] } = useVentes();
+  
+  // Block if: proprietaire OR own subscription expired OR owner's subscription expired (for gérant)
+  const blocked = isReadOnly || isProprietaire || (isGerant && ownerExpired);
   const addDette = useAddDette();
   const updateStock = useUpdateProduitStock();
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);

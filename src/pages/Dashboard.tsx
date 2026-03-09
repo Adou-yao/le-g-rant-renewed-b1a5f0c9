@@ -67,7 +67,8 @@ export default function Dashboard() {
         </div>
       </header>
 
-      {/* Subscription banners removed - gérant interface is purely operational */}
+      {/* Subscription Expired Banner for Gerant */}
+      {ownerExpired && <SubscriptionExpiredBanner />}
 
       {/* Hero Benefit Card */}
       <div className="px-5 mb-5 animate-slide-up" style={{ animationDelay: '100ms' }}>
