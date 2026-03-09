@@ -20,22 +20,41 @@ export default function Stats() {
     const clients = new Set(ventes.filter((v) => v.nom_client).map((v) => v.nom_client));
     const clientsFideles = clients.size;
     const chiffreAffaires = ventes.reduce((sum, v) => sum + v.montant_total, 0);
-    const beneficeTotal = ventes.reduce((sum, vente) => {
-      const produit = produits.find((p) => p.id === vente.produit_id);
-      if (produit) return sum + (produit.prix_vente - produit.prix_achat) * vente.quantite;
-      return sum;
-    }, 0);
+    
+    // Only calculate profit for owners
+    const beneficeTotal = isProprietaire 
+      ? ventes.reduce((sum, vente) => {
+          const produit = produits.find((p) => p.id === vente.produit_id);
+          if (produit) return sum + (produit.prix_vente - produit.prix_achat) * vente.quantite;
+          return sum;
+        }, 0)
+      : 0;
+    
+    // Value at sale price for managers, purchase price for owners
     const valeurStock = produits.reduce((sum, p) => sum + p.prix_vente * p.stock_actuel, 0);
+    const valeurStockAchat = isProprietaire 
+      ? produits.reduce((sum, p) => sum + p.prix_achat * p.stock_actuel, 0)
+      : 0;
+    
     const totalDettes = dettes.reduce((sum, d) => sum + d.montant_du, 0);
     const paiementStats = {
       cash: ventes.filter((v) => v.mode_paiement === "Espèce").length,
       wave: ventes.filter((v) => v.mode_paiement === "Wave").length,
       orange: ventes.filter((v) => v.mode_paiement === "Orange Money").length,
     };
-    return { totalVentes, clientsFideles, chiffreAffaires, beneficeTotal, valeurStock, totalDettes, paiementStats };
-  }, [produits, ventes, dettes]);
+    return { totalVentes, clientsFideles, chiffreAffaires, beneficeTotal, valeurStock, valeurStockAchat, totalDettes, paiementStats };
+  }, [produits, ventes, dettes, isProprietaire]);
 
   if (isLoading) return <div className="flex items-center justify-center min-h-[60vh]"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
+
+  // Build financial items based on role
+  const financialItems = [
+    { icon: TrendingUp, label: "Chiffre d'affaires", value: stats.chiffreAffaires, color: "success" },
+    ...(isProprietaire ? [{ icon: Wallet, label: "Bénéfice total", value: stats.beneficeTotal, color: "success", prefix: "+" }] : []),
+    { icon: Package, label: "Valeur du stock", value: stats.valeurStock, color: "info" },
+    ...(isProprietaire ? [{ icon: Package, label: "Capital immobilisé", value: stats.valeurStockAchat, color: "warning" }] : []),
+    { icon: Target, label: "Crédits en cours", value: stats.totalDettes, color: "destructive" },
+  ];
 
   return (
     <div className="pb-24 animate-fade-in">
@@ -53,12 +72,7 @@ export default function Stats() {
           <h3 className="text-sm font-bold text-foreground uppercase tracking-wide">Vue Financière</h3>
         </div>
         <div className="space-y-3">
-          {[
-            { icon: TrendingUp, label: "Chiffre d'affaires", value: stats.chiffreAffaires, color: "success" },
-            { icon: Wallet, label: "Bénéfice total", value: stats.beneficeTotal, color: "success", prefix: "+" },
-            { icon: Package, label: "Valeur du stock", value: stats.valeurStock, color: "info" },
-            { icon: Target, label: "Crédits en cours", value: stats.totalDettes, color: "destructive" },
-          ].map((item) => (
+          {financialItems.map((item) => (
             <div key={item.label} className="group bg-card rounded-2xl p-4 card-shadow-lg transition-all duration-300 hover:translate-x-1">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
