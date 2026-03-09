@@ -70,24 +70,24 @@ export default function Dashboard() {
       {/* Subscription Expired Banner for Gerant */}
       {ownerExpired && <SubscriptionExpiredBanner />}
 
-      {/* Hero Benefit Card */}
+      {/* Hero Revenue Card - Only show revenue, hide profit for managers */}
       <div className="px-5 mb-5 animate-slide-up" style={{ animationDelay: '100ms' }}>
-        <div className={`relative overflow-hidden rounded-3xl p-6 ${beneficeReel >= 0 ? 'gradient-success' : 'bg-destructive'} text-white`}>
+        <div className="relative overflow-hidden rounded-3xl p-6 gradient-primary text-white">
           <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/4 blur-2xl" />
           <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/4" />
           <div className="relative">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <p className="text-sm opacity-80 mb-1 font-medium">Bénéfice net du jour</p>
+                <p className="text-sm opacity-80 mb-1 font-medium">Ventes du jour</p>
                 <p className="text-4xl font-display currency-display">
-                  {new Intl.NumberFormat("fr-CI").format(beneficeReel)} F
+                  {new Intl.NumberFormat("fr-CI").format(stats.ventesJour)} F
                 </p>
               </div>
               <div className="p-3 rounded-2xl bg-white/15 backdrop-blur-sm">
-                <Wallet className="h-7 w-7" />
+                <TrendingUp className="h-7 w-7" />
               </div>
             </div>
-            <p className="text-xs opacity-60">Ventes – Coût d'achat – Dépenses</p>
+            <p className="text-xs opacity-60">Chiffre d'affaires du jour</p>
           </div>
         </div>
       </div>
