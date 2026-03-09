@@ -10,6 +10,9 @@ export interface Shop {
   whatsapp: string;
   type_commerce: string;
   logo_url: string | null;
+  date_fin_essai: string | null;
+  est_en_essai: boolean;
+  subscription_status: string;
   created_at: string;
   updated_at: string;
 }
