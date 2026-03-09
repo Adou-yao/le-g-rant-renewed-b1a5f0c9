@@ -37,8 +37,8 @@ export default function Ventes() {
   const [cashReceived, setCashReceived] = useState("");
   const [addFees, setAddFees] = useState(false);
 
-  // Block if: proprietaire OR own subscription expired OR owner's subscription expired (for gérant)
-  const blocked = isReadOnly || isProprietaire || (isGerant && ownerExpired);
+  // Block if: proprietaire OR subscription expired (per-shop for gérant)
+  const blocked = isReadOnly || isProprietaire;
 
   const top5Products = useMemo(() => { const sc: Record<string, number> = {}; ventes.forEach((v) => { if (v.produit_id) sc[v.produit_id] = (sc[v.produit_id] || 0) + v.quantite; }); return produits.filter((p) => sc[p.id]).sort((a, b) => (sc[b.id] || 0) - (sc[a.id] || 0)).slice(0, 5); }, [produits, ventes]);
   const otherProducts = useMemo(() => { const ids = new Set(top5Products.map((p) => p.id)); return produits.filter((p) => !ids.has(p.id)); }, [produits, top5Products]);
