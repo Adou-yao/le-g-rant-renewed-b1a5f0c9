@@ -102,11 +102,6 @@ export function PendingDeliveries() {
                 <p className="text-xs text-muted-foreground">
                   +{t.quantite} unités • {t.source === 'initial' ? 'Stock initial' : 'Réappro.'} • {new Date(t.created_at).toLocaleDateString("fr-CI")}
                 </p>
-                {t.nouveau_prix_achat && (
-                  <p className="text-xs text-primary mt-0.5">
-                    Nouveau prix d'achat : {new Intl.NumberFormat("fr-CI").format(t.nouveau_prix_achat)} F
-                  </p>
-                )}
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 <Button

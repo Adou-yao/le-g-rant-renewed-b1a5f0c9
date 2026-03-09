@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { TrendingUp, Wallet, AlertTriangle, Package, Loader2, LogOut, ArrowDownCircle, Banknote, Smartphone, ChevronRight, Zap } from "lucide-react";
+import { TrendingUp, AlertTriangle, Package, Loader2, LogOut, ArrowDownCircle, Banknote, Smartphone, ChevronRight, Zap } from "lucide-react";
 import { StatCard } from "@/components/ui/StatCard";
 import { Button } from "@/components/ui/button";
 import { useProduits } from "@/hooks/useProduits";
@@ -7,7 +7,7 @@ import { useVentes } from "@/hooks/useVentes";
 import { useDepenses } from "@/hooks/useDepenses";
 import { useAuth } from "@/hooks/useAuth";
 import { useOwnerSubscription } from "@/hooks/useOwnerSubscription";
-import { calculateDailyStats, getWeeklySalesData, getLowStockProduits } from "@/lib/statsHelpers";
+import { getWeeklySalesData, getLowStockProduits } from "@/lib/statsHelpers";
 import { toast } from "sonner";
 import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
 import { useNavigate } from "react-router-dom";
@@ -22,9 +22,12 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   const today = new Date().toISOString().split("T")[0];
-  const stats = useMemo(() => calculateDailyStats(ventes, produits), [ventes, produits]);
+  // Only calculate revenue for managers (no profit)
+  const ventesJour = useMemo(() => 
+    ventes.filter((v) => v.date_vente.startsWith(today)).reduce((sum, v) => sum + v.montant_total, 0), 
+    [ventes, today]
+  );
   const depensesJour = useMemo(() => depenses.filter((d) => d.date_depense.startsWith(today)).reduce((sum, d) => sum + d.montant, 0), [depenses, today]);
-  const beneficeReel = stats.beneficeNet - depensesJour;
   const cashBalance = useMemo(() => ventes.filter((v) => v.date_vente.startsWith(today) && v.mode_paiement === "Espèce").reduce((sum, v) => sum + v.montant_total, 0) - depensesJour, [ventes, depensesJour, today]);
   const mobileBalance = useMemo(() => ventes.filter((v) => v.date_vente.startsWith(today) && v.mode_paiement !== "Espèce").reduce((sum, v) => sum + v.montant_total, 0), [ventes, today]);
   const weeklyData = useMemo(() => getWeeklySalesData(ventes), [ventes]);
@@ -70,31 +73,31 @@ export default function Dashboard() {
       {/* Subscription Expired Banner for Gerant */}
       {ownerExpired && <SubscriptionExpiredBanner />}
 
-      {/* Hero Benefit Card */}
+      {/* Hero Revenue Card - Only show revenue, hide profit for managers */}
       <div className="px-5 mb-5 animate-slide-up" style={{ animationDelay: '100ms' }}>
-        <div className={`relative overflow-hidden rounded-3xl p-6 ${beneficeReel >= 0 ? 'gradient-success' : 'bg-destructive'} text-white`}>
+        <div className="relative overflow-hidden rounded-3xl p-6 gradient-primary text-white">
           <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/4 blur-2xl" />
           <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/4" />
           <div className="relative">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <p className="text-sm opacity-80 mb-1 font-medium">Bénéfice net du jour</p>
+                <p className="text-sm opacity-80 mb-1 font-medium">Ventes du jour</p>
                 <p className="text-4xl font-display currency-display">
-                  {new Intl.NumberFormat("fr-CI").format(beneficeReel)} F
+                  {new Intl.NumberFormat("fr-CI").format(ventesJour)} F
                 </p>
               </div>
               <div className="p-3 rounded-2xl bg-white/15 backdrop-blur-sm">
-                <Wallet className="h-7 w-7" />
+                <TrendingUp className="h-7 w-7" />
               </div>
             </div>
-            <p className="text-xs opacity-60">Ventes – Coût d'achat – Dépenses</p>
+            <p className="text-xs opacity-60">Chiffre d'affaires du jour</p>
           </div>
         </div>
       </div>
 
-      {/* Stat Cards Grid */}
+      {/* Stat Cards Grid - Only show depenses for manager */}
       <div className="px-5 grid grid-cols-2 gap-3 mb-3">
-        <StatCard label="Chiffre d'affaires" value={`${new Intl.NumberFormat("fr-CI").format(stats.ventesJour)} F`} icon={TrendingUp} variant="success" delay={150} />
+        <StatCard label="Nb. de ventes" value={ventes.filter((v) => v.date_vente.startsWith(today)).length.toString()} icon={Package} variant="primary" delay={150} />
         <StatCard label="Dépenses" value={`${new Intl.NumberFormat("fr-CI").format(depensesJour)} F`} icon={ArrowDownCircle} variant="destructive" delay={200} />
       </div>
 

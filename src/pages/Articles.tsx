@@ -11,6 +11,7 @@ export default function Articles() {
   const { isProprietaire } = useUserRole();
 
   const totalStock = produits.reduce((sum, p) => sum + p.stock_actuel, 0);
+  // Only show value at sale price for managers, purchase price value only for owners
   const totalValue = produits.reduce((sum, p) => sum + p.prix_vente * p.stock_actuel, 0);
 
   if (isLoading) {
@@ -51,7 +52,14 @@ export default function Articles() {
       ) : (
         <div className="px-4 space-y-3">
           {produits.map((produit) => (
-            <ProductCard key={produit.id} name={produit.nom} prixAchat={produit.prix_achat} prixVente={produit.prix_vente} stock={produit.stock_actuel} showProfit />
+            <ProductCard 
+              key={produit.id} 
+              name={produit.nom} 
+              prixAchat={isProprietaire ? produit.prix_achat : 0} 
+              prixVente={produit.prix_vente} 
+              stock={produit.stock_actuel} 
+              showProfit={isProprietaire} 
+            />
           ))}
         </div>
       )}
