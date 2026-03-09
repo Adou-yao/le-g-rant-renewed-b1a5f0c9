@@ -51,7 +51,16 @@ export default function Ventes() {
   const change = cashReceived ? parseInt(cashReceived) - total : 0;
 
   const handleSale = async () => {
-    if (blocked) { if (isProprietaire) { toast.error("Mode Supervision : vous ne pouvez pas enregistrer de ventes."); } else { showReadOnlyAlert(); } return; }
+    if (blocked) { 
+      if (isProprietaire) { 
+        toast.error("Mode Supervision : vous ne pouvez pas enregistrer de ventes."); 
+      } else if (isGerant && ownerExpired) {
+        toast.error("Abonnement expiré. Contactez le propriétaire pour réactiver.");
+      } else { 
+        showReadOnlyAlert(); 
+      } 
+      return; 
+    }
     if (!produit) { toast.error("Sélectionne un produit"); return; }
     if (produit.stock_actuel < quantity) { toast.error("Stock insuffisant !"); return; }
     if (isCredit && !clientName.trim()) { toast.error("Entre le nom du client pour le crédit"); return; }
