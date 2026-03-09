@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CheckCircle, Loader2, Truck, XCircle } from "lucide-react";
+import { CheckCircle, Loader2, Truck, XCircle, AlertTriangle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useManagerPendingTransfers, useConfirmTransfer, useRejectTransfer } from "@/hooks/useStockTransfers";
 import { useProduits } from "@/hooks/useProduits";
+import { useOwnerSubscription } from "@/hooks/useOwnerSubscription";
 import { toast } from "sonner";
 
 const REJECTION_REASONS = [
@@ -27,6 +28,7 @@ const REJECTION_REASONS = [
 export function PendingDeliveries() {
   const { data: transfers = [], isLoading } = useManagerPendingTransfers();
   const { data: produits = [] } = useProduits();
+  const { isExpired: ownerExpired } = useOwnerSubscription();
   const confirmTransfer = useConfirmTransfer();
   const rejectTransfer = useRejectTransfer();
   
