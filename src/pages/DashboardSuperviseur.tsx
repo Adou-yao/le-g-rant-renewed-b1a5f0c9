@@ -34,6 +34,8 @@ import {
   Plus,
   Crown,
   Sparkles,
+  CreditCard,
+  Lock,
 } from "lucide-react";
 import { ReapprovisionnementModal } from "@/components/ReapprovisionnementModal";
 import { CreateProductModal } from "@/components/CreateProductModal";
@@ -42,6 +44,13 @@ import { InventaireReports } from "@/components/InventaireReports";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useNavigate } from "react-router-dom";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface ManagerVente {
   id: string;
