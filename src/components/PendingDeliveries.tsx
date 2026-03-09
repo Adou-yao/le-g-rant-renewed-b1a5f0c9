@@ -37,6 +37,10 @@ export function PendingDeliveries() {
   const [rejectionReason, setRejectionReason] = useState("");
 
   const handleConfirm = async (id: string) => {
+    if (ownerExpired) {
+      toast.error("Abonnement expiré. Contactez le propriétaire pour réactiver.");
+      return;
+    }
     try {
       await confirmTransfer.mutateAsync(id);
       toast.success("Réception confirmée ! Stock mis à jour.");
