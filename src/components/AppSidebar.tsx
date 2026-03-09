@@ -24,13 +24,13 @@ const gerantNavItems = [
   { icon: Package, label: "Stock", path: "/articles" },
   { icon: BookOpen, label: "Dettes", path: "/dettes" },
   { icon: Wallet, label: "Dépenses", path: "/depenses" },
-  { icon: BarChart3, label: "Statistiques", path: "/stats" },
   { icon: ClipboardCheck, label: "Inventaire", path: "/faire-inventaire" },
 ];
 
 const proprietaireNavItems = [
   { icon: LayoutDashboard, label: "Supervision", path: "/dashboard-superviseur" },
   { icon: Network, label: "Mon Réseau", path: "/dashboard-proprietaire" },
+  { icon: BarChart3, label: "Statistiques", path: "/stats" },
   { icon: CreditCard, label: "Abonnement", path: "/abonnement" },
 ];
 
