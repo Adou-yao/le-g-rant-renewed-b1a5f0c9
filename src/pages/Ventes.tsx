@@ -22,7 +22,6 @@ export default function Ventes() {
   const { data: produits = [], isLoading } = useProduits();
   const { isReadOnly } = useSubscription();
   const { isProprietaire, isGerant } = useUserRole();
-  const { isExpired: ownerExpired } = useOwnerSubscription();
   const { data: ventes = [] } = useVentes();
   const addVente = useAddVente();
   const addDette = useAddDette();
