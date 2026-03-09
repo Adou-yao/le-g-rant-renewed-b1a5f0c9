@@ -239,6 +239,7 @@ export type Database = {
           date_fin_essai: string | null
           email: string | null
           full_name: string | null
+          has_used_trial: boolean
           id: string
           must_change_password: boolean
           nom_boutique: string | null
@@ -255,6 +256,7 @@ export type Database = {
           date_fin_essai?: string | null
           email?: string | null
           full_name?: string | null
+          has_used_trial?: boolean
           id?: string
           must_change_password?: boolean
           nom_boutique?: string | null
@@ -271,6 +273,7 @@ export type Database = {
           date_fin_essai?: string | null
           email?: string | null
           full_name?: string | null
+          has_used_trial?: boolean
           id?: string
           must_change_password?: boolean
           nom_boutique?: string | null
