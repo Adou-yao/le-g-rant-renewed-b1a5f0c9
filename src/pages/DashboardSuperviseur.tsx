@@ -82,6 +82,8 @@ export default function DashboardSuperviseur() {
   const { user } = useAuth();
   const { shops } = useShops();
   const { managers } = useManagers();
+  const { daysLeft, subscriptionStatus } = useSubscription();
+  const navigate = useNavigate();
   const [selectedShop, setSelectedShop] = useState<string>("all");
   const [restockProduct, setRestockProduct] = useState<any>(null);
   const [showCreateProduct, setShowCreateProduct] = useState(false);
