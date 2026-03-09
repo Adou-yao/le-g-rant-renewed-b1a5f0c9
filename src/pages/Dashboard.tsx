@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
 import { useNavigate } from "react-router-dom";
 import { SubscriptionExpiredBanner } from "@/components/ui/SubscriptionExpiredBanner";
+import { ShopTrialWarning } from "@/components/ui/ShopTrialWarning";
 
 export default function Dashboard() {
   const { signOut, user } = useAuth();
