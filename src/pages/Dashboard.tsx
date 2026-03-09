@@ -83,7 +83,7 @@ export default function Dashboard() {
               <div>
                 <p className="text-sm opacity-80 mb-1 font-medium">Ventes du jour</p>
                 <p className="text-4xl font-display currency-display">
-                  {new Intl.NumberFormat("fr-CI").format(stats.ventesJour)} F
+                  {new Intl.NumberFormat("fr-CI").format(ventesJour)} F
                 </p>
               </div>
               <div className="p-3 rounded-2xl bg-white/15 backdrop-blur-sm">
