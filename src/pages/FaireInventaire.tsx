@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { useProduits } from "@/hooks/useProduits";
 import { useSubmitInventaire } from "@/hooks/useInventaires";
 import { useAuth } from "@/hooks/useAuth";
-import { useOwnerSubscription } from "@/hooks/useOwnerSubscription";
+import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
