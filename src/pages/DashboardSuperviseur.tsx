@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useShops } from "@/hooks/useShops";
 import { useManagers } from "@/hooks/useManagers";
+import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { SupervisionBadge } from "@/components/ui/SupervisionBadge";
@@ -31,6 +32,8 @@ import {
   Clock,
   PackagePlus,
   Plus,
+  Crown,
+  Sparkles,
 } from "lucide-react";
 import { ReapprovisionnementModal } from "@/components/ReapprovisionnementModal";
 import { CreateProductModal } from "@/components/CreateProductModal";
@@ -38,6 +41,7 @@ import { useOwnerTransfers, useRejectedTransfers } from "@/hooks/useStockTransfe
 import { InventaireReports } from "@/components/InventaireReports";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useNavigate } from "react-router-dom";
 
 interface ManagerVente {
   id: string;
@@ -78,6 +82,8 @@ export default function DashboardSuperviseur() {
   const { user } = useAuth();
   const { shops } = useShops();
   const { managers } = useManagers();
+  const { daysLeft, subscriptionStatus } = useSubscription();
+  const navigate = useNavigate();
   const [selectedShop, setSelectedShop] = useState<string>("all");
   const [restockProduct, setRestockProduct] = useState<any>(null);
   const [showCreateProduct, setShowCreateProduct] = useState(false);
@@ -242,6 +248,49 @@ export default function DashboardSuperviseur() {
           </Select>
         </div>
         <SupervisionBadge />
+
+        {/* Subscription Status Widget - Proprietaire only */}
+        {subscriptionStatus === "trial" && daysLeft !== null && (
+          <div
+            onClick={() => navigate("/abonnement")}
+            className="p-3 rounded-2xl glass-strong flex items-center gap-3 cursor-pointer hover:shadow-md transition-all premium-border"
+          >
+            <div className="p-2 rounded-xl bg-warning/10">
+              <Sparkles className="h-4 w-4 text-warning" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-medium text-foreground">
+                Période d'essai : <span className="text-warning font-bold">{daysLeft} jour{daysLeft > 1 ? "s" : ""}</span> restant{daysLeft > 1 ? "s" : ""}
+              </p>
+            </div>
+            <Badge variant="outline" className="text-xs">Voir les plans</Badge>
+          </div>
+        )}
+        {subscriptionStatus === "active" && (
+          <div className="p-3 rounded-2xl glass-strong flex items-center gap-3 premium-border">
+            <div className="p-2 rounded-xl bg-accent/10">
+              <Crown className="h-4 w-4 text-accent" />
+            </div>
+            <p className="text-sm font-medium text-foreground">
+              Statut de l'abonnement : <span className="text-accent font-bold">Actif</span>
+            </p>
+          </div>
+        )}
+        {subscriptionStatus === "expired" && (
+          <div
+            onClick={() => navigate("/abonnement")}
+            className="p-3 rounded-2xl glass-strong border-destructive/30 flex items-center gap-3 cursor-pointer hover:shadow-md transition-all"
+          >
+            <div className="p-2 rounded-xl bg-destructive/10">
+              <AlertTriangle className="h-4 w-4 text-destructive" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-medium text-destructive">Essai terminé</p>
+              <p className="text-xs text-muted-foreground">Abonnez-vous pour continuer</p>
+            </div>
+            <Badge className="text-xs bg-primary text-primary-foreground">S'abonner</Badge>
+          </div>
+        )}
       </div>
 
       {/* Stock Disputes Alert */}
