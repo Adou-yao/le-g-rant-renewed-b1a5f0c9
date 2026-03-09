@@ -19,7 +19,7 @@ export default function Dashboard() {
   const { data: produits = [], isLoading: loadingProduits } = useProduits();
   const { data: ventes = [], isLoading: loadingVentes } = useVentes();
   const { data: depenses = [], isLoading: loadingDepenses } = useDepenses();
-  const { isExpired: ownerExpired } = useOwnerSubscription();
+  const { isReadOnly: shopExpired } = useSubscription();
   const navigate = useNavigate();
 
   const today = new Date().toISOString().split("T")[0];
