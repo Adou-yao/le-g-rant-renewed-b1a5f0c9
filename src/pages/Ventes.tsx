@@ -52,10 +52,8 @@ export default function Ventes() {
     if (blocked) { 
       if (isProprietaire) { 
         toast.error("Mode Supervision : vous ne pouvez pas enregistrer de ventes."); 
-      } else if (isGerant && ownerExpired) {
-        toast.error("Abonnement expiré. Contactez le propriétaire pour réactiver.");
       } else { 
-        showReadOnlyAlert(); 
+        showReadOnlyAlert();
       } 
       return; 
     }
