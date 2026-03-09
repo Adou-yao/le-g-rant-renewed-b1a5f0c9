@@ -172,10 +172,21 @@ export default function DashboardProprietaire() {
 
                     <div className="flex gap-2 pt-1">
                       {status === "expired" ? (
-                        <Button size="sm" variant="default" className="flex-1 gap-1.5 text-xs" onClick={() => navigate("/abonnement")}>
+                        <Button size="sm" variant="default" className="flex-1 gap-1.5 text-xs" onClick={() => navigate(`/abonnement?shop=${shop.id}`)}>
                           <CreditCard className="h-3.5 w-3.5" />
                           Activer l'abonnement
                         </Button>
+                      ) : trialDays !== null && trialDays <= 5 ? (
+                        <>
+                          <Button size="sm" variant="default" className="flex-1 gap-1.5 text-xs">
+                            <Settings className="h-3.5 w-3.5" />
+                            Gérer
+                          </Button>
+                          <Button size="sm" variant="outline" className="flex-1 gap-1.5 text-xs border-destructive/30 text-destructive hover:text-destructive" onClick={() => navigate(`/abonnement?shop=${shop.id}`)}>
+                            <CreditCard className="h-3.5 w-3.5" />
+                            Payer
+                          </Button>
+                        </>
                       ) : (
                         <Button size="sm" variant="default" className="flex-1 gap-1.5 text-xs">
                           <Settings className="h-3.5 w-3.5" />
