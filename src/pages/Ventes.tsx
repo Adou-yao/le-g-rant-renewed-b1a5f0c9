@@ -25,9 +25,7 @@ export default function Ventes() {
   const { isProprietaire, isGerant } = useUserRole();
   const { isExpired: ownerExpired } = useOwnerSubscription();
   const { data: ventes = [] } = useVentes();
-  
-  // Block if: proprietaire OR own subscription expired OR owner's subscription expired (for gérant)
-  const blocked = isReadOnly || isProprietaire || (isGerant && ownerExpired);
+  const addVente = useAddVente();
   const addDette = useAddDette();
   const updateStock = useUpdateProduitStock();
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
@@ -41,7 +39,8 @@ export default function Ventes() {
   const [cashReceived, setCashReceived] = useState("");
   const [addFees, setAddFees] = useState(false);
 
-  const blocked = isReadOnly || isProprietaire;
+  // Block if: proprietaire OR own subscription expired OR owner's subscription expired (for gérant)
+  const blocked = isReadOnly || isProprietaire || (isGerant && ownerExpired);
 
   const top5Products = useMemo(() => { const sc: Record<string, number> = {}; ventes.forEach((v) => { if (v.produit_id) sc[v.produit_id] = (sc[v.produit_id] || 0) + v.quantite; }); return produits.filter((p) => sc[p.id]).sort((a, b) => (sc[b.id] || 0) - (sc[a.id] || 0)).slice(0, 5); }, [produits, ventes]);
   const otherProducts = useMemo(() => { const ids = new Set(top5Products.map((p) => p.id)); return produits.filter((p) => !ids.has(p.id)); }, [produits, top5Products]);
