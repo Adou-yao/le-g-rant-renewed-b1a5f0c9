@@ -6,16 +6,19 @@ import { useProduits } from "@/hooks/useProduits";
 import { useVentes } from "@/hooks/useVentes";
 import { useDepenses } from "@/hooks/useDepenses";
 import { useAuth } from "@/hooks/useAuth";
+import { useOwnerSubscription } from "@/hooks/useOwnerSubscription";
 import { calculateDailyStats, getWeeklySalesData, getLowStockProduits } from "@/lib/statsHelpers";
 import { toast } from "sonner";
 import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
 import { useNavigate } from "react-router-dom";
+import { SubscriptionExpiredBanner } from "@/components/ui/SubscriptionExpiredBanner";
 
 export default function Dashboard() {
   const { signOut, user } = useAuth();
   const { data: produits = [], isLoading: loadingProduits } = useProduits();
   const { data: ventes = [], isLoading: loadingVentes } = useVentes();
   const { data: depenses = [], isLoading: loadingDepenses } = useDepenses();
+  const { isExpired: ownerExpired } = useOwnerSubscription();
   const navigate = useNavigate();
 
   const today = new Date().toISOString().split("T")[0];
@@ -64,7 +67,8 @@ export default function Dashboard() {
         </div>
       </header>
 
-      {/* Subscription banners removed - gérant interface is purely operational */}
+      {/* Subscription Expired Banner for Gerant */}
+      {ownerExpired && <SubscriptionExpiredBanner />}
 
       {/* Hero Benefit Card */}
       <div className="px-5 mb-5 animate-slide-up" style={{ animationDelay: '100ms' }}>

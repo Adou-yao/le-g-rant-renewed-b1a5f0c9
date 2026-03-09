@@ -554,7 +554,16 @@ export type Database = {
         }
         Returns: string
       }
+      get_owner_subscription_status: {
+        Args: never
+        Returns: {
+          days_left: number
+          is_expired: boolean
+          subscription_status: string
+        }[]
+      }
       has_admin_role: { Args: { _user_id: string }; Returns: boolean }
+      owner_has_active_subscription: { Args: never; Returns: boolean }
       reject_stock_transfer: {
         Args: { reason: string; transfer_id: string }
         Returns: undefined

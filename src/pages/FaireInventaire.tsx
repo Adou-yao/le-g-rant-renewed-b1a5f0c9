@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { ClipboardCheck, Loader2, Send, Package } from "lucide-react";
+import { ClipboardCheck, Loader2, Send, Package, AlertTriangle } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,13 +9,16 @@ import { Badge } from "@/components/ui/badge";
 import { useProduits } from "@/hooks/useProduits";
 import { useSubmitInventaire } from "@/hooks/useInventaires";
 import { useAuth } from "@/hooks/useAuth";
+import { useOwnerSubscription } from "@/hooks/useOwnerSubscription";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { SubscriptionExpiredBanner } from "@/components/ui/SubscriptionExpiredBanner";
 
 export default function FaireInventaire() {
   const { user } = useAuth();
   const { data: produits = [], isLoading } = useProduits();
+  const { isExpired: ownerExpired } = useOwnerSubscription();
   const submitInventaire = useSubmitInventaire();
   const navigate = useNavigate();
   const [counts, setCounts] = useState<Record<string, string>>({});
@@ -46,6 +49,10 @@ export default function FaireInventaire() {
   );
 
   const handleSubmit = async () => {
+    if (ownerExpired) {
+      toast.error("Abonnement expiré. Contactez le propriétaire pour réactiver.");
+      return;
+    }
     if (filledCount === 0) {
       toast.error("Remplis au moins un comptage");
       return;
@@ -91,6 +98,8 @@ export default function FaireInventaire() {
         title="Faire l'Inventaire"
         subtitle="Compte chaque produit physiquement"
       />
+
+      {ownerExpired && <SubscriptionExpiredBanner />}
 
       <div className="px-4 space-y-3">
         <Card className="border-primary/20 bg-primary/5">
@@ -146,15 +155,17 @@ export default function FaireInventaire() {
           </div>
           <Button
             onClick={handleSubmit}
-            disabled={submitInventaire.isPending || filledCount === 0}
-            className="w-full h-12 bg-primary hover:bg-primary/90"
+            disabled={submitInventaire.isPending || filledCount === 0 || ownerExpired}
+            className={`w-full h-12 ${ownerExpired ? 'bg-muted text-muted-foreground' : 'bg-primary hover:bg-primary/90'}`}
           >
             {submitInventaire.isPending ? (
               <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+            ) : ownerExpired ? (
+              <AlertTriangle className="mr-2 h-5 w-5" />
             ) : (
               <Send className="mr-2 h-5 w-5" />
             )}
-            Envoyer l'inventaire ({filledCount} produit{filledCount > 1 ? "s" : ""})
+            {ownerExpired ? "Abonnement expiré" : `Envoyer l'inventaire (${filledCount} produit${filledCount > 1 ? "s" : ""})`}
           </Button>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CheckCircle, Loader2, Truck, XCircle } from "lucide-react";
+import { CheckCircle, Loader2, Truck, XCircle, AlertTriangle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useManagerPendingTransfers, useConfirmTransfer, useRejectTransfer } from "@/hooks/useStockTransfers";
 import { useProduits } from "@/hooks/useProduits";
+import { useOwnerSubscription } from "@/hooks/useOwnerSubscription";
 import { toast } from "sonner";
 
 const REJECTION_REASONS = [
@@ -27,6 +28,7 @@ const REJECTION_REASONS = [
 export function PendingDeliveries() {
   const { data: transfers = [], isLoading } = useManagerPendingTransfers();
   const { data: produits = [] } = useProduits();
+  const { isExpired: ownerExpired } = useOwnerSubscription();
   const confirmTransfer = useConfirmTransfer();
   const rejectTransfer = useRejectTransfer();
   
@@ -35,6 +37,10 @@ export function PendingDeliveries() {
   const [rejectionReason, setRejectionReason] = useState("");
 
   const handleConfirm = async (id: string) => {
+    if (ownerExpired) {
+      toast.error("Abonnement expiré. Contactez le propriétaire pour réactiver.");
+      return;
+    }
     try {
       await confirmTransfer.mutateAsync(id);
       toast.success("Réception confirmée ! Stock mis à jour.");
@@ -107,7 +113,7 @@ export function PendingDeliveries() {
                   size="sm"
                   variant="outline"
                   onClick={() => openRejectModal(t.id)}
-                  disabled={rejectTransfer.isPending}
+                  disabled={rejectTransfer.isPending || ownerExpired}
                   className="text-destructive border-destructive/30 hover:bg-destructive/10"
                 >
                   <XCircle className="h-4 w-4 mr-1" />
@@ -116,15 +122,17 @@ export function PendingDeliveries() {
                 <Button
                   size="sm"
                   onClick={() => handleConfirm(t.id)}
-                  disabled={confirmTransfer.isPending}
-                  className="bg-accent hover:bg-accent/90"
+                  disabled={confirmTransfer.isPending || ownerExpired}
+                  className={ownerExpired ? "bg-muted text-muted-foreground" : "bg-accent hover:bg-accent/90"}
                 >
                   {confirmTransfer.isPending ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : ownerExpired ? (
+                    <AlertTriangle className="h-4 w-4 mr-1" />
                   ) : (
                     <CheckCircle className="h-4 w-4 mr-1" />
                   )}
-                  Confirmer
+                  {ownerExpired ? "Expiré" : "Confirmer"}
                 </Button>
               </div>
             </div>
