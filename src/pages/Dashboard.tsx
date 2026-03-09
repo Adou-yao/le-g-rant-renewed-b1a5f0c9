@@ -92,9 +92,9 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Stat Cards Grid */}
+      {/* Stat Cards Grid - Only show depenses for manager */}
       <div className="px-5 grid grid-cols-2 gap-3 mb-3">
-        <StatCard label="Chiffre d'affaires" value={`${new Intl.NumberFormat("fr-CI").format(stats.ventesJour)} F`} icon={TrendingUp} variant="success" delay={150} />
+        <StatCard label="Nb. de ventes" value={ventes.filter((v) => v.date_vente.startsWith(today)).length.toString()} icon={Package} variant="primary" delay={150} />
         <StatCard label="Dépenses" value={`${new Intl.NumberFormat("fr-CI").format(depensesJour)} F`} icon={ArrowDownCircle} variant="destructive" delay={200} />
       </div>
 
