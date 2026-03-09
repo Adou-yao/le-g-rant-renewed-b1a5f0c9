@@ -1,71 +1,124 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { StatCard } from "@/components/ui/StatCard";
 import { useProduits } from "@/hooks/useProduits";
 import { useVentes } from "@/hooks/useVentes";
 import { useDettes } from "@/hooks/useDettes";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useShops } from "@/hooks/useShops";
+import { useManagers } from "@/hooks/useManagers";
 import { SupervisionBadge } from "@/components/ui/SupervisionBadge";
-import { ShoppingBag, Users, TrendingUp, Wallet, Package, Target, Loader2 } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ShoppingBag, TrendingUp, Wallet, Package, Target, Loader2, Store } from "lucide-react";
 
 export default function Stats() {
   const { data: produits = [], isLoading: loadingProduits } = useProduits();
   const { data: ventes = [], isLoading: loadingVentes } = useVentes();
   const { data: dettes = [], isLoading: loadingDettes } = useDettes();
-  const { isProprietaire } = useUserRole();
-  const isLoading = loadingProduits || loadingVentes || loadingDettes;
+  const { isProprietaire, loading: loadingRole } = useUserRole();
+  const { shops, isLoading: loadingShops } = useShops();
+  const { managers, isLoading: loadingManagers } = useManagers();
+  const [selectedShopId, setSelectedShopId] = useState<string>("all");
+
+  const isLoading = loadingProduits || loadingVentes || loadingDettes || loadingRole || loadingShops || loadingManagers;
+
+  // Get manager IDs for the selected shop
+  const getManagerIdsForShop = (shopId: string): string[] => {
+    if (shopId === "all") return managers.map((m) => m.manager_id);
+    return managers.filter((m) => m.shop_id === shopId).map((m) => m.manager_id);
+  };
+
+  const filteredData = useMemo(() => {
+    const managerIds = getManagerIdsForShop(selectedShopId);
+    return {
+      ventes: ventes.filter((v) => managerIds.includes(v.user_id)),
+      produits: produits.filter((p) => managerIds.includes(p.user_id)),
+      dettes: dettes.filter((d) => managerIds.includes(d.user_id)),
+    };
+  }, [ventes, produits, dettes, managers, selectedShopId]);
 
   const stats = useMemo(() => {
-    const totalVentes = ventes.length;
-    const clients = new Set(ventes.filter((v) => v.nom_client).map((v) => v.nom_client));
-    const clientsFideles = clients.size;
-    const chiffreAffaires = ventes.reduce((sum, v) => sum + v.montant_total, 0);
-    
-    // Only calculate profit for owners
-    const beneficeTotal = isProprietaire 
-      ? ventes.reduce((sum, vente) => {
-          const produit = produits.find((p) => p.id === vente.produit_id);
-          if (produit) return sum + (produit.prix_vente - produit.prix_achat) * vente.quantite;
-          return sum;
-        }, 0)
-      : 0;
-    
-    // Value at sale price for managers, purchase price for owners
-    const valeurStock = produits.reduce((sum, p) => sum + p.prix_vente * p.stock_actuel, 0);
-    const valeurStockAchat = isProprietaire 
-      ? produits.reduce((sum, p) => sum + p.prix_achat * p.stock_actuel, 0)
-      : 0;
-    
-    const totalDettes = dettes.reduce((sum, d) => sum + d.montant_du, 0);
+    const { ventes: fVentes, produits: fProduits, dettes: fDettes } = filteredData;
+    const totalVentes = fVentes.length;
+    const chiffreAffaires = fVentes.reduce((sum, v) => sum + v.montant_total, 0);
+
+    const beneficeTotal = fVentes.reduce((sum, vente) => {
+      const produit = fProduits.find((p) => p.id === vente.produit_id);
+      if (produit) return sum + (produit.prix_vente - produit.prix_achat) * vente.quantite;
+      return sum;
+    }, 0);
+
+    const valeurStock = fProduits.reduce((sum, p) => sum + p.prix_vente * p.stock_actuel, 0);
+    const valeurStockAchat = fProduits.reduce((sum, p) => sum + p.prix_achat * p.stock_actuel, 0);
+    const totalDettes = fDettes.reduce((sum, d) => sum + d.montant_du, 0);
+
     const paiementStats = {
-      cash: ventes.filter((v) => v.mode_paiement === "Espèce").length,
-      wave: ventes.filter((v) => v.mode_paiement === "Wave").length,
-      orange: ventes.filter((v) => v.mode_paiement === "Orange Money").length,
+      cash: fVentes.filter((v) => v.mode_paiement === "Espèce").length,
+      wave: fVentes.filter((v) => v.mode_paiement === "Wave").length,
+      orange: fVentes.filter((v) => v.mode_paiement === "Orange Money").length,
     };
-    return { totalVentes, clientsFideles, chiffreAffaires, beneficeTotal, valeurStock, valeurStockAchat, totalDettes, paiementStats };
-  }, [produits, ventes, dettes, isProprietaire]);
+
+    return { totalVentes, chiffreAffaires, beneficeTotal, valeurStock, valeurStockAchat, totalDettes, paiementStats };
+  }, [filteredData]);
+
+  // Comparison table: per-shop stats
+  const shopComparison = useMemo(() => {
+    return shops.map((shop) => {
+      const managerIds = managers.filter((m) => m.shop_id === shop.id).map((m) => m.manager_id);
+      const shopVentes = ventes.filter((v) => managerIds.includes(v.user_id));
+      const shopProduits = produits.filter((p) => managerIds.includes(p.user_id));
+      const ca = shopVentes.reduce((sum, v) => sum + v.montant_total, 0);
+      const benefice = shopVentes.reduce((sum, vente) => {
+        const produit = shopProduits.find((p) => p.id === vente.produit_id);
+        if (produit) return sum + (produit.prix_vente - produit.prix_achat) * vente.quantite;
+        return sum;
+      }, 0);
+      return { id: shop.id, nom: shop.nom, ca, benefice, nbVentes: shopVentes.length };
+    });
+  }, [shops, managers, ventes, produits]);
 
   if (isLoading) return <div className="flex items-center justify-center min-h-[60vh]"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
 
-  // Build financial items based on role
   const financialItems = [
     { icon: TrendingUp, label: "Chiffre d'affaires", value: stats.chiffreAffaires, color: "success" },
-    ...(isProprietaire ? [{ icon: Wallet, label: "Bénéfice total", value: stats.beneficeTotal, color: "success", prefix: "+" }] : []),
-    { icon: Package, label: "Valeur du stock", value: stats.valeurStock, color: "info" },
-    ...(isProprietaire ? [{ icon: Package, label: "Capital immobilisé", value: stats.valeurStockAchat, color: "warning" }] : []),
+    { icon: Wallet, label: "Bénéfice total", value: stats.beneficeTotal, color: "success", prefix: "+" },
+    { icon: Package, label: "Valeur du stock (vente)", value: stats.valeurStock, color: "info" },
+    { icon: Package, label: "Capital immobilisé", value: stats.valeurStockAchat, color: "warning" },
     { icon: Target, label: "Crédits en cours", value: stats.totalDettes, color: "destructive" },
   ];
 
+  const selectedLabel = selectedShopId === "all" ? "Toutes les boutiques" : shops.find((s) => s.id === selectedShopId)?.nom || "";
+
   return (
     <div className="pb-24 animate-fade-in">
-      <PageHeader title="Statistiques" subtitle="Votre rapport de performance complet" />
+      <PageHeader title="Statistiques" subtitle={selectedLabel} />
       {isProprietaire && <SupervisionBadge />}
 
-      <div className="px-4 grid grid-cols-2 gap-3 mb-6">
-        <StatCard label="Ventes totales" value={stats.totalVentes} icon={ShoppingBag} variant="success" delay={0} />
-        <StatCard label="Clients fidèles" value={stats.clientsFideles} icon={Users} variant="primary" delay={100} />
+      {/* Shop selector */}
+      <div className="px-4 mb-6">
+        <div className="flex items-center gap-2 mb-2">
+          <Store className="h-4 w-4 text-muted-foreground" />
+          <span className="text-sm font-medium text-muted-foreground">Filtrer par boutique</span>
+        </div>
+        <Select value={selectedShopId} onValueChange={setSelectedShopId}>
+          <SelectTrigger className="w-full bg-card rounded-xl border-border">
+            <SelectValue placeholder="Sélectionner une boutique" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Toutes les boutiques</SelectItem>
+            {shops.map((shop) => (
+              <SelectItem key={shop.id} value={shop.id}>{shop.nom}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
+      {/* Sales count */}
+      <div className="px-4 grid grid-cols-1 gap-3 mb-6">
+        <StatCard label="Ventes totales" value={stats.totalVentes} icon={ShoppingBag} variant="success" delay={0} />
+      </div>
+
+      {/* Financial overview */}
       <div className="px-4 mb-6">
         <div className="flex items-center gap-2 mb-4">
           <div className="w-8 h-1 rounded-full bg-gradient-to-r from-primary to-success" />
@@ -88,7 +141,8 @@ export default function Stats() {
         </div>
       </div>
 
-      <div className="px-4">
+      {/* Payment methods */}
+      <div className="px-4 mb-6">
         <div className="flex items-center gap-2 mb-4">
           <div className="w-8 h-1 rounded-full bg-gradient-to-r from-info to-warning" />
           <h3 className="text-sm font-bold text-foreground uppercase tracking-wide">Modes de Paiement</h3>
@@ -111,6 +165,42 @@ export default function Stats() {
           ))}
         </div>
       </div>
+
+      {/* Shop comparison table */}
+      {shops.length > 1 && (
+        <div className="px-4 mb-6">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-8 h-1 rounded-full bg-gradient-to-r from-primary to-info" />
+            <h3 className="text-sm font-bold text-foreground uppercase tracking-wide">Comparaison des Boutiques</h3>
+          </div>
+          <div className="bg-card rounded-2xl card-shadow-lg overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th className="text-left p-4 text-muted-foreground font-semibold">Boutique</th>
+                    <th className="text-right p-4 text-muted-foreground font-semibold">Ventes</th>
+                    <th className="text-right p-4 text-muted-foreground font-semibold">CA</th>
+                    <th className="text-right p-4 text-muted-foreground font-semibold">Bénéfice</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {shopComparison
+                    .sort((a, b) => b.ca - a.ca)
+                    .map((shop, i) => (
+                      <tr key={shop.id} className={i % 2 === 0 ? "bg-muted/20" : ""}>
+                        <td className="p-4 font-medium text-foreground">{shop.nom}</td>
+                        <td className="p-4 text-right text-foreground">{shop.nbVentes}</td>
+                        <td className="p-4 text-right font-semibold text-foreground">{new Intl.NumberFormat("fr-CI").format(shop.ca)} F</td>
+                        <td className="p-4 text-right font-semibold text-success">+{new Intl.NumberFormat("fr-CI").format(shop.benefice)} F</td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
