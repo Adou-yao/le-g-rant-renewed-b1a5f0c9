@@ -22,8 +22,8 @@ import { toast } from "sonner";
 export default function Ventes() {
   const { data: produits = [], isLoading } = useProduits();
   const { isReadOnly } = useSubscription();
-  const { isProprietaire } = useUserRole();
-  const { data: ventes = [] } = useVentes();
+  const { isProprietaire, isGerant } = useUserRole();
+  const { isExpired: ownerExpired } = useOwnerSubscription();
   const addVente = useAddVente();
   const addDette = useAddDette();
   const updateStock = useUpdateProduitStock();
