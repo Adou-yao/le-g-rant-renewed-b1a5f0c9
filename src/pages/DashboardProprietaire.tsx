@@ -143,7 +143,12 @@ export default function DashboardProprietaire() {
                     </div>
 
                     {/* Trial / Subscription status */}
-                    {status === "expired" ? (
+                    {status === "pending_payment" ? (
+                      <div className="flex items-center gap-2 p-2 rounded-lg bg-warning/10 text-warning text-xs font-medium">
+                        <CreditCard className="h-3.5 w-3.5" />
+                        <span>En attente de paiement</span>
+                      </div>
+                    ) : status === "expired" ? (
                       <div className="flex items-center gap-2 p-2 rounded-lg bg-destructive/10 text-destructive text-xs font-medium">
                         <Clock className="h-3.5 w-3.5" />
                         <span>Essai expiré</span>
