@@ -118,8 +118,11 @@ export default function DashboardProprietaire() {
             </div>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2">
-              {shops.map((shop) => (
-                <Card key={shop.id} className="border-border/40 bg-muted/30 hover:shadow-md transition-shadow">
+              {shops.map((shop) => {
+                const trialDays = getShopTrialDays(shop);
+                const status = getShopStatus(shop);
+                return (
+                <Card key={shop.id} className={`border-border/40 bg-muted/30 hover:shadow-md transition-shadow ${status === "expired" ? "border-destructive/40" : ""}`}>
                   <CardContent className="p-4 space-y-3">
                     <div className="flex items-start gap-3">
                       <div className="h-12 w-12 shrink-0 rounded-xl overflow-hidden bg-primary/10 flex items-center justify-center">
@@ -137,6 +140,25 @@ export default function DashboardProprietaire() {
                         </span>
                       </div>
                     </div>
+
+                    {/* Trial / Subscription status */}
+                    {status === "expired" ? (
+                      <div className="flex items-center gap-2 p-2 rounded-lg bg-destructive/10 text-destructive text-xs font-medium">
+                        <Clock className="h-3.5 w-3.5" />
+                        <span>Essai expiré</span>
+                      </div>
+                    ) : status === "active" ? (
+                      <div className="flex items-center gap-2 p-2 rounded-lg bg-primary/10 text-primary text-xs font-medium">
+                        <CreditCard className="h-3.5 w-3.5" />
+                        <span>Abonnement actif</span>
+                      </div>
+                    ) : trialDays !== null ? (
+                      <div className={`flex items-center gap-2 p-2 rounded-lg text-xs font-medium ${trialDays <= 5 ? "bg-destructive/10 text-destructive" : "bg-accent text-accent-foreground"}`}>
+                        <Clock className="h-3.5 w-3.5" />
+                        <span>Essai gratuit : {trialDays} jour{trialDays > 1 ? "s" : ""} restant{trialDays > 1 ? "s" : ""}</span>
+                      </div>
+                    ) : null}
+
                     <div className="space-y-1.5 text-sm text-muted-foreground">
                       <div className="flex items-center gap-2">
                         <MapPin className="h-3.5 w-3.5 shrink-0" />
@@ -147,11 +169,19 @@ export default function DashboardProprietaire() {
                         <span>{shop.whatsapp}</span>
                       </div>
                     </div>
+
                     <div className="flex gap-2 pt-1">
-                      <Button size="sm" variant="default" className="flex-1 gap-1.5 text-xs">
-                        <Settings className="h-3.5 w-3.5" />
-                        Gérer
-                      </Button>
+                      {status === "expired" ? (
+                        <Button size="sm" variant="default" className="flex-1 gap-1.5 text-xs" onClick={() => navigate("/abonnement")}>
+                          <CreditCard className="h-3.5 w-3.5" />
+                          Activer l'abonnement
+                        </Button>
+                      ) : (
+                        <Button size="sm" variant="default" className="flex-1 gap-1.5 text-xs">
+                          <Settings className="h-3.5 w-3.5" />
+                          Gérer
+                        </Button>
+                      )}
                       <Button size="sm" variant="outline" className="flex-1 gap-1.5 text-xs" onClick={() => openEdit(shop)}>
                         <Pencil className="h-3.5 w-3.5" />
                         Modifier
@@ -159,7 +189,8 @@ export default function DashboardProprietaire() {
                     </div>
                   </CardContent>
                 </Card>
-              ))}
+                );
+              })}
             </div>
           )}
         </CardContent>
