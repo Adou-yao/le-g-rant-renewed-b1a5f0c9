@@ -73,7 +73,7 @@ export default function Dashboard() {
       </header>
 
       {/* Subscription Expired Banner for Gerant */}
-      {ownerExpired && <SubscriptionExpiredBanner />}
+      {shopExpired && <SubscriptionExpiredBanner />}
 
       {/* Hero Revenue Card - Only show revenue, hide profit for managers */}
       <div className="px-5 mb-5 animate-slide-up" style={{ animationDelay: '100ms' }}>
