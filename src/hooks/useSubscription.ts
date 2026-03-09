@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useUserRole } from "@/hooks/useUserRole";
 
 interface SubscriptionState {
   isLoading: boolean;
@@ -11,6 +12,7 @@ interface SubscriptionState {
 
 export function useSubscription(): SubscriptionState {
   const { user } = useAuth();
+  const { isProprietaire, isGerant } = useUserRole();
   const [state, setState] = useState<SubscriptionState>({
     isLoading: true,
     isReadOnly: false,
@@ -24,50 +26,64 @@ export function useSubscription(): SubscriptionState {
       return;
     }
 
-    const fetchProfile = async () => {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("date_fin_essai, subscription_status, subscription_end_date")
-        .eq("user_id", user.id)
-        .single();
+    // Owner account is always free — no read-only for owners
+    if (isProprietaire) {
+      setState({ isLoading: false, isReadOnly: false, daysLeft: null, subscriptionStatus: "active" });
+      return;
+    }
 
-      if (error || !data) {
-        setState({ isLoading: false, isReadOnly: false, daysLeft: 30, subscriptionStatus: "trial" });
-        return;
-      }
+    // For managers, check their shop's trial status
+    if (isGerant) {
+      const checkShopTrial = async () => {
+        const { data: managerRecord } = await supabase
+          .from("shop_managers" as any)
+          .select("shop_id")
+          .eq("manager_id", user.id)
+          .eq("is_active", true)
+          .single();
 
-      const now = new Date();
-      const status = data.subscription_status as "trial" | "active" | "expired";
-
-      if (status === "active" && data.subscription_end_date) {
-        const subEnd = new Date(data.subscription_end_date);
-        if (subEnd > now) {
-          const days = Math.ceil((subEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-          setState({ isLoading: false, isReadOnly: false, daysLeft: days, subscriptionStatus: "active" });
+        if (!managerRecord) {
+          setState({ isLoading: false, isReadOnly: true, daysLeft: 0, subscriptionStatus: "expired" });
           return;
         }
-        // Subscription expired
-        setState({ isLoading: false, isReadOnly: true, daysLeft: 0, subscriptionStatus: "expired" });
-        return;
-      }
 
-      if (status === "trial" && data.date_fin_essai) {
-        const trialEnd = new Date(data.date_fin_essai);
-        const days = Math.ceil((trialEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-        if (days > 0) {
-          setState({ isLoading: false, isReadOnly: false, daysLeft: days, subscriptionStatus: "trial" });
-        } else {
+        const { data: shop } = await supabase
+          .from("shops" as any)
+          .select("date_fin_essai, subscription_status")
+          .eq("id", (managerRecord as any).shop_id)
+          .single();
+
+        if (!shop) {
           setState({ isLoading: false, isReadOnly: true, daysLeft: 0, subscriptionStatus: "expired" });
+          return;
         }
-        return;
-      }
 
-      // Fallback: no trial date set, grant access
-      setState({ isLoading: false, isReadOnly: false, daysLeft: null, subscriptionStatus: "trial" });
-    };
+        const s = shop as any;
+        if (s.subscription_status === "active") {
+          setState({ isLoading: false, isReadOnly: false, daysLeft: null, subscriptionStatus: "active" });
+          return;
+        }
 
-    fetchProfile();
-  }, [user]);
+        if (s.date_fin_essai) {
+          const days = Math.ceil((new Date(s.date_fin_essai).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+          if (days > 0) {
+            setState({ isLoading: false, isReadOnly: false, daysLeft: days, subscriptionStatus: "trial" });
+          } else {
+            setState({ isLoading: false, isReadOnly: true, daysLeft: 0, subscriptionStatus: "expired" });
+          }
+          return;
+        }
+
+        setState({ isLoading: false, isReadOnly: false, daysLeft: 30, subscriptionStatus: "trial" });
+      };
+
+      checkShopTrial();
+      return;
+    }
+
+    // Fallback
+    setState({ isLoading: false, isReadOnly: false, daysLeft: null, subscriptionStatus: "trial" });
+  }, [user, isProprietaire, isGerant]);
 
   return state;
 }

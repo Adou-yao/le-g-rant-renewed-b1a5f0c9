@@ -1,14 +1,42 @@
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useShops, type Shop } from "@/hooks/useShops";
 import { Button } from "@/components/ui/button";
-import { Store, Check, Crown, ArrowLeft, Sparkles, BadgePercent, Shield } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Store, Check, Crown, ArrowLeft, Sparkles, BadgePercent, Shield, Clock, CreditCard } from "lucide-react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { initierPaystackPayment } from "@/lib/paystack";
 import { supabase } from "@/integrations/supabase/client";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function Abonnement() {
   const { user } = useAuth();
+  const { shops, isLoading } = useShops();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [selectedShopId, setSelectedShopId] = useState<string>("");
+
+  // Auto-select shop from URL param
+  useEffect(() => {
+    const shopParam = searchParams.get("shop");
+    if (shopParam && shops.find(s => s.id === shopParam)) {
+      setSelectedShopId(shopParam);
+    }
+  }, [searchParams, shops]);
+
+  const selectedShop = shops.find(s => s.id === selectedShopId);
+
+  const getShopTrialDays = (shop: Shop): number | null => {
+    if (!shop.date_fin_essai) return null;
+    return Math.ceil((new Date(shop.date_fin_essai).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+  };
+
+  const getShopStatus = (shop: Shop): "trial" | "active" | "expired" => {
+    if (shop.subscription_status === "active") return "active";
+    const days = getShopTrialDays(shop);
+    if (days !== null && days <= 0) return "expired";
+    return "trial";
+  };
 
   const plans = [
     {
@@ -43,9 +71,12 @@ export default function Abonnement() {
   ];
 
   const handleSubscribe = async (plan: typeof plans[0]) => {
-    console.log("Ouverture Paystack...", { email: user?.email, plan: plan.name });
     if (!user?.email) {
       toast.error("Veuillez vous connecter pour souscrire");
+      return;
+    }
+    if (!selectedShopId) {
+      toast.error("Veuillez sélectionner une boutique");
       return;
     }
 
@@ -56,6 +87,8 @@ export default function Abonnement() {
       metadata: {
         plan: plan.name,
         vendeur_id: user.id,
+        boutique: selectedShop?.nom,
+        shop_id: selectedShopId,
       },
       callback: async (response) => {
         const endDate = new Date();
@@ -66,19 +99,20 @@ export default function Abonnement() {
         }
 
         const { error } = await supabase
-          .from("profiles")
+          .from("shops" as any)
           .update({
             subscription_status: "active",
-            subscription_end_date: endDate.toISOString(),
-          })
-          .eq("user_id", user.id);
+            est_en_essai: false,
+            date_fin_essai: endDate.toISOString(),
+          } as any)
+          .eq("id", selectedShopId);
 
         if (error) {
           console.error("Erreur mise à jour abonnement:", error);
           toast.error("Paiement reçu mais erreur de mise à jour. Contactez le support.");
         } else {
-          toast.success(`🎉 Abonnement ${plan.name} activé avec succès !`);
-          navigate("/");
+          toast.success(`🎉 Abonnement ${plan.name} activé pour ${selectedShop?.nom} !`);
+          navigate("/proprietaire");
         }
       },
       onClose: () => {
@@ -87,14 +121,19 @@ export default function Abonnement() {
     });
   };
 
+  // Shops that need subscription (expired or near expiry)
+  const shopsNeedingSub = shops.filter(s => {
+    const status = getShopStatus(s);
+    return status === "expired" || status === "trial";
+  });
+
   return (
     <div className="min-h-screen gradient-mesh pb-8 relative overflow-hidden">
-      {/* Decorative orbs */}
       <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-primary/10 blur-3xl -translate-y-1/2 translate-x-1/3" />
       <div className="absolute bottom-0 left-0 w-60 h-60 rounded-full bg-accent/8 blur-3xl translate-y-1/3 -translate-x-1/4" />
 
       <header className="relative px-5 pt-8 pb-6 safe-top">
-        <Button variant="ghost" size="icon" onClick={() => navigate("/")} className="rounded-2xl mb-4 glass">
+        <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="rounded-2xl mb-4 glass">
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <div className="text-center">
@@ -104,23 +143,73 @@ export default function Abonnement() {
               <Store className="w-10 h-10 text-white" />
             </div>
           </div>
-          <h1 className="text-3xl font-display text-gradient mb-2">Abonnement</h1>
+          <h1 className="text-3xl font-display text-gradient mb-2">Abonnement Boutique</h1>
           <p className="text-muted-foreground max-w-xs mx-auto">
-            Débloquez toutes les fonctionnalités de Le Gérant
+            Chaque boutique a son propre abonnement
           </p>
         </div>
       </header>
 
+      {/* Shop selector */}
       <div className="relative px-5 mb-6">
-        <div className="glass-strong rounded-2xl p-4 text-center premium-border">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <Sparkles className="h-5 w-5 text-accent" />
-            <span className="font-bold text-accent">30 jours d'essai gratuit</span>
-          </div>
-          <p className="text-sm text-muted-foreground">Profitez de toutes les fonctionnalités sans engagement</p>
+        <div className="glass-strong rounded-2xl p-4 premium-border">
+          <label className="text-sm font-semibold text-foreground mb-3 block">Sélectionnez une boutique</label>
+          {isLoading ? (
+            <div className="h-10 animate-pulse rounded-lg bg-muted" />
+          ) : (
+            <Select value={selectedShopId} onValueChange={setSelectedShopId}>
+              <SelectTrigger className="rounded-xl">
+                <SelectValue placeholder="Choisir une boutique..." />
+              </SelectTrigger>
+              <SelectContent>
+                {shopsNeedingSub.map(shop => {
+                  const days = getShopTrialDays(shop);
+                  const status = getShopStatus(shop);
+                  return (
+                    <SelectItem key={shop.id} value={shop.id}>
+                      <div className="flex items-center gap-2">
+                        <span>{shop.nom}</span>
+                        {status === "expired" ? (
+                          <span className="text-xs text-destructive font-medium">— Expiré</span>
+                        ) : days !== null ? (
+                          <span className="text-xs text-muted-foreground">— {days}j restants</span>
+                        ) : null}
+                      </div>
+                    </SelectItem>
+                  );
+                })}
+                {shopsNeedingSub.length === 0 && (
+                  <div className="p-3 text-sm text-muted-foreground text-center">
+                    Toutes vos boutiques ont un abonnement actif ✓
+                  </div>
+                )}
+              </SelectContent>
+            </Select>
+          )}
+
+          {/* Selected shop status */}
+          {selectedShop && (() => {
+            const days = getShopTrialDays(selectedShop);
+            const status = getShopStatus(selectedShop);
+            return (
+              <div className={`mt-3 flex items-center gap-2 p-2 rounded-lg text-xs font-medium ${
+                status === "expired" ? "bg-destructive/10 text-destructive" : 
+                status === "active" ? "bg-primary/10 text-primary" :
+                "bg-accent text-accent-foreground"
+              }`}>
+                {status === "expired" ? <Clock className="h-3.5 w-3.5" /> : <CreditCard className="h-3.5 w-3.5" />}
+                <span>
+                  {status === "expired" ? "Essai expiré — Abonnement requis" :
+                   status === "active" ? "Abonnement actif" :
+                   `Essai : ${days} jour${(days ?? 0) > 1 ? "s" : ""} restant${(days ?? 0) > 1 ? "s" : ""}`}
+                </span>
+              </div>
+            );
+          })()}
         </div>
       </div>
 
+      {/* Plans */}
       <div className="relative px-5 space-y-4">
         {plans.map((plan, idx) => (
           <div
@@ -137,10 +226,6 @@ export default function Abonnement() {
                 <Crown className="h-3 w-3" />
                 Meilleure offre
               </div>
-            )}
-
-            {plan.popular && (
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/4 blur-2xl" />
             )}
 
             <div className="relative text-center mb-6">
@@ -172,13 +257,14 @@ export default function Abonnement() {
 
             <Button
               onClick={() => handleSubscribe(plan)}
+              disabled={!selectedShopId}
               className={`w-full h-14 rounded-2xl text-lg font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] ${
                 plan.popular
                   ? "bg-white text-primary hover:bg-white/90 shadow-xl"
                   : "gradient-primary text-white glow-primary"
               }`}
             >
-              Souscrire
+              {selectedShopId ? "Souscrire" : "Sélectionnez une boutique"}
             </Button>
           </div>
         ))}

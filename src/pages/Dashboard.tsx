@@ -6,7 +6,7 @@ import { useProduits } from "@/hooks/useProduits";
 import { useVentes } from "@/hooks/useVentes";
 import { useDepenses } from "@/hooks/useDepenses";
 import { useAuth } from "@/hooks/useAuth";
-import { useOwnerSubscription } from "@/hooks/useOwnerSubscription";
+import { useSubscription } from "@/hooks/useSubscription";
 import { getWeeklySalesData, getLowStockProduits } from "@/lib/statsHelpers";
 import { toast } from "sonner";
 import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
@@ -19,7 +19,7 @@ export default function Dashboard() {
   const { data: produits = [], isLoading: loadingProduits } = useProduits();
   const { data: ventes = [], isLoading: loadingVentes } = useVentes();
   const { data: depenses = [], isLoading: loadingDepenses } = useDepenses();
-  const { isExpired: ownerExpired } = useOwnerSubscription();
+  const { isReadOnly: shopExpired } = useSubscription();
   const navigate = useNavigate();
 
   const today = new Date().toISOString().split("T")[0];
@@ -73,7 +73,7 @@ export default function Dashboard() {
       </header>
 
       {/* Subscription Expired Banner for Gerant */}
-      {ownerExpired && <SubscriptionExpiredBanner />}
+      {shopExpired && <SubscriptionExpiredBanner />}
 
       {/* Hero Revenue Card - Only show revenue, hide profit for managers */}
       <div className="px-5 mb-5 animate-slide-up" style={{ animationDelay: '100ms' }}>
