@@ -52,6 +52,7 @@ export default function Dashboard() {
 
   return (
     <div className="pb-24 gradient-mesh min-h-screen">
+      <ShopTrialWarning />
       {/* Header */}
       <header className="px-5 pt-8 pb-2 safe-top">
         <div className="flex items-start justify-between gap-4">
