@@ -18,6 +18,7 @@ import { SubscriptionExpiredBanner } from "@/components/ui/SubscriptionExpiredBa
 export default function FaireInventaire() {
   const { user } = useAuth();
   const { data: produits = [], isLoading } = useProduits();
+  const { isExpired: ownerExpired } = useOwnerSubscription();
   const submitInventaire = useSubmitInventaire();
   const navigate = useNavigate();
   const [counts, setCounts] = useState<Record<string, string>>({});
