@@ -17,8 +17,8 @@ export interface Shop {
   updated_at: string;
 }
 
-export type ShopInsert = Omit<Shop, "id" | "created_at" | "updated_at">;
-export type ShopUpdate = Partial<Omit<Shop, "id" | "user_id" | "created_at" | "updated_at">>;
+export type ShopInsert = Omit<Shop, "id" | "created_at" | "updated_at" | "date_fin_essai" | "est_en_essai" | "subscription_status">;
+export type ShopUpdate = Partial<Omit<Shop, "id" | "user_id" | "created_at" | "updated_at" | "date_fin_essai" | "est_en_essai" | "subscription_status">>;
 
 export function useShops() {
   const { user } = useAuth();
