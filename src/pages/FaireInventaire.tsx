@@ -49,6 +49,10 @@ export default function FaireInventaire() {
   );
 
   const handleSubmit = async () => {
+    if (ownerExpired) {
+      toast.error("Abonnement expiré. Contactez le propriétaire pour réactiver.");
+      return;
+    }
     if (filledCount === 0) {
       toast.error("Remplis au moins un comptage");
       return;
