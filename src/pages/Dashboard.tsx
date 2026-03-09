@@ -64,8 +64,7 @@ export default function Dashboard() {
         </div>
       </header>
 
-      <TrialBanner daysLeft={daysLeft} subscriptionStatus={subscriptionStatus} />
-      {isProprietaire && <div className="px-1"><SupervisionBadge /></div>}
+      {/* Subscription banners removed - gérant interface is purely operational */}
 
       {/* Hero Benefit Card */}
       <div className="px-5 mb-5 animate-slide-up" style={{ animationDelay: '100ms' }}>
