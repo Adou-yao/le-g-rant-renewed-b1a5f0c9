@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useShops, type Shop } from "@/hooks/useShops";
 import { Button } from "@/components/ui/button";
 import { Store, Check, Crown, ArrowLeft, Sparkles, BadgePercent, Shield, Clock, CreditCard } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { initierPaystackPayment } from "@/lib/paystack";
 import { supabase } from "@/integrations/supabase/client";
