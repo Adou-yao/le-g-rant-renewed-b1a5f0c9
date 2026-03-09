@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useShops, type Shop } from "@/hooks/useShops";
 import { Button } from "@/components/ui/button";
