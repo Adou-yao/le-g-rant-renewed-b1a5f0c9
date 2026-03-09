@@ -13,7 +13,6 @@ import { useAddVente, useVentes } from "@/hooks/useVentes";
 import { useAddDette } from "@/hooks/useDettes";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useUserRole } from "@/hooks/useUserRole";
-import { useOwnerSubscription } from "@/hooks/useOwnerSubscription";
 import { showReadOnlyAlert } from "@/components/ui/ReadOnlyAlert";
 import { SupervisionBadge } from "@/components/ui/SupervisionBadge";
 import { SubscriptionExpiredBanner } from "@/components/ui/SubscriptionExpiredBanner";
