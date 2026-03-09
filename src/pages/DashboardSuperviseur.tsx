@@ -637,6 +637,38 @@ export default function DashboardSuperviseur() {
         managers={managers}
         shops={shops}
       />
+
+      {/* Subscription Expired Modal - Non-closable */}
+      <Dialog open={subscriptionStatus === "expired"}>
+        <DialogContent 
+          className="sm:max-w-md [&>button]:hidden"
+          onPointerDownOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+          onInteractOutside={(e) => e.preventDefault()}
+        >
+          <DialogHeader className="text-center sm:text-center">
+            <div className="mx-auto mb-4 h-16 w-16 rounded-full bg-destructive/10 flex items-center justify-center">
+              <Lock className="h-8 w-8 text-destructive" />
+            </div>
+            <DialogTitle className="text-xl">Abonnement Expiré</DialogTitle>
+            <DialogDescription className="text-center mt-2">
+              Votre période d'essai est terminée. Pour réactiver l'accès de vos gérants et continuer à gérer votre réseau de boutiques, veuillez renouveler votre abonnement.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-6 space-y-4">
+            <Button 
+              onClick={() => navigate("/abonnement")} 
+              className="w-full h-12 text-base font-semibold gap-2"
+            >
+              <CreditCard className="h-5 w-5" />
+              Renouveler mon abonnement Paystack
+            </Button>
+            <p className="text-xs text-center text-muted-foreground">
+              Paiement sécurisé via Paystack
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
