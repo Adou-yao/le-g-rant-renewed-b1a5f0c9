@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
 import { useNavigate } from "react-router-dom";
 import { SubscriptionExpiredBanner } from "@/components/ui/SubscriptionExpiredBanner";
+import { ShopTrialWarning } from "@/components/ui/ShopTrialWarning";
 
 export default function Dashboard() {
   const { signOut, user } = useAuth();
@@ -51,6 +52,7 @@ export default function Dashboard() {
 
   return (
     <div className="pb-24 gradient-mesh min-h-screen">
+      <ShopTrialWarning />
       {/* Header */}
       <header className="px-5 pt-8 pb-2 safe-top">
         <div className="flex items-start justify-between gap-4">

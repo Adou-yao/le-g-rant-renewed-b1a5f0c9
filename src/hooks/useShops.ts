@@ -10,12 +10,15 @@ export interface Shop {
   whatsapp: string;
   type_commerce: string;
   logo_url: string | null;
+  date_fin_essai: string | null;
+  est_en_essai: boolean;
+  subscription_status: string;
   created_at: string;
   updated_at: string;
 }
 
-export type ShopInsert = Omit<Shop, "id" | "created_at" | "updated_at">;
-export type ShopUpdate = Partial<Omit<Shop, "id" | "user_id" | "created_at" | "updated_at">>;
+export type ShopInsert = Omit<Shop, "id" | "created_at" | "updated_at" | "date_fin_essai" | "est_en_essai" | "subscription_status">;
+export type ShopUpdate = Partial<Omit<Shop, "id" | "user_id" | "created_at" | "updated_at" | "date_fin_essai" | "est_en_essai" | "subscription_status">>;
 
 export function useShops() {
   const { user } = useAuth();

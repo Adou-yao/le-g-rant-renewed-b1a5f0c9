@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      deleted_shop_names: {
+        Row: {
+          cooldown_until: string | null
+          deleted_at: string | null
+          id: string
+          shop_name: string
+          user_id: string
+        }
+        Insert: {
+          cooldown_until?: string | null
+          deleted_at?: string | null
+          id?: string
+          shop_name: string
+          user_id: string
+        }
+        Update: {
+          cooldown_until?: string | null
+          deleted_at?: string | null
+          id?: string
+          shop_name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       depenses: {
         Row: {
           categorie: string
@@ -309,10 +333,13 @@ export type Database = {
       shops: {
         Row: {
           created_at: string
+          date_fin_essai: string | null
+          est_en_essai: boolean | null
           id: string
           localisation: string
           logo_url: string | null
           nom: string
+          subscription_status: string | null
           type_commerce: string
           updated_at: string
           user_id: string
@@ -320,10 +347,13 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          date_fin_essai?: string | null
+          est_en_essai?: boolean | null
           id?: string
           localisation?: string
           logo_url?: string | null
           nom: string
+          subscription_status?: string | null
           type_commerce?: string
           updated_at?: string
           user_id: string
@@ -331,10 +361,13 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          date_fin_essai?: string | null
+          est_en_essai?: boolean | null
           id?: string
           localisation?: string
           logo_url?: string | null
           nom?: string
+          subscription_status?: string | null
           type_commerce?: string
           updated_at?: string
           user_id?: string
@@ -567,6 +600,10 @@ export type Database = {
       reject_stock_transfer: {
         Args: { reason: string; transfer_id: string }
         Returns: undefined
+      }
+      shop_has_active_subscription: {
+        Args: { _shop_id: string }
+        Returns: boolean
       }
       user_owns_resource: {
         Args: { resource_user_id: string }
