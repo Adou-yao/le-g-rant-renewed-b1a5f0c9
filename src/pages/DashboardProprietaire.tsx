@@ -2,7 +2,7 @@ import { useState } from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Store, Users, Plus, MapPin, Phone, Tag, Settings, Pencil, UserX, UserCheck, Trash2 } from "lucide-react";
+import { Store, Users, Plus, MapPin, Phone, Tag, Settings, Pencil, UserX, UserCheck, Trash2, Clock, CreditCard } from "lucide-react";
 import { useShops } from "@/hooks/useShops";
 import { useManagers } from "@/hooks/useManagers";
 import { ShopFormModal } from "@/components/ShopFormModal";
@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { useNavigate } from "react-router-dom";
 
 export default function DashboardProprietaire() {
   const { shops, isLoading, addShop, updateShop } = useShops();
