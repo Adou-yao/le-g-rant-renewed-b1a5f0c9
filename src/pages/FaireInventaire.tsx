@@ -155,15 +155,17 @@ export default function FaireInventaire() {
           </div>
           <Button
             onClick={handleSubmit}
-            disabled={submitInventaire.isPending || filledCount === 0}
-            className="w-full h-12 bg-primary hover:bg-primary/90"
+            disabled={submitInventaire.isPending || filledCount === 0 || ownerExpired}
+            className={`w-full h-12 ${ownerExpired ? 'bg-muted text-muted-foreground' : 'bg-primary hover:bg-primary/90'}`}
           >
             {submitInventaire.isPending ? (
               <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+            ) : ownerExpired ? (
+              <AlertTriangle className="mr-2 h-5 w-5" />
             ) : (
               <Send className="mr-2 h-5 w-5" />
             )}
-            Envoyer l'inventaire ({filledCount} produit{filledCount > 1 ? "s" : ""})
+            {ownerExpired ? "Abonnement expiré" : `Envoyer l'inventaire (${filledCount} produit${filledCount > 1 ? "s" : ""})`}
           </Button>
         </div>
       </div>
