@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useShops } from "@/hooks/useShops";
 import { useManagers } from "@/hooks/useManagers";
+import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { SupervisionBadge } from "@/components/ui/SupervisionBadge";
@@ -31,6 +32,8 @@ import {
   Clock,
   PackagePlus,
   Plus,
+  Crown,
+  Sparkles,
 } from "lucide-react";
 import { ReapprovisionnementModal } from "@/components/ReapprovisionnementModal";
 import { CreateProductModal } from "@/components/CreateProductModal";
@@ -38,6 +41,7 @@ import { useOwnerTransfers, useRejectedTransfers } from "@/hooks/useStockTransfe
 import { InventaireReports } from "@/components/InventaireReports";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useNavigate } from "react-router-dom";
 
 interface ManagerVente {
   id: string;
