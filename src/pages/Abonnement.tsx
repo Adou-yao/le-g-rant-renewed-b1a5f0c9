@@ -13,7 +13,16 @@ export default function Abonnement() {
   const { user } = useAuth();
   const { shops, isLoading } = useShops();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [selectedShopId, setSelectedShopId] = useState<string>("");
+
+  // Auto-select shop from URL param
+  useEffect(() => {
+    const shopParam = searchParams.get("shop");
+    if (shopParam && shops.find(s => s.id === shopParam)) {
+      setSelectedShopId(shopParam);
+    }
+  }, [searchParams, shops]);
 
   const selectedShop = shops.find(s => s.id === selectedShopId);
 
