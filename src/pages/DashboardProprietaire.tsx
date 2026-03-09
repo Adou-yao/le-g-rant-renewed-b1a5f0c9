@@ -28,8 +28,9 @@ export default function DashboardProprietaire() {
     return Math.ceil((end.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
   };
 
-  const getShopStatus = (shop: Shop): "trial" | "active" | "expired" => {
+  const getShopStatus = (shop: Shop): "trial" | "active" | "expired" | "pending_payment" => {
     if (shop.subscription_status === "active") return "active";
+    if (shop.subscription_status === "pending_payment") return "pending_payment";
     const days = getShopTrialDays(shop);
     if (days !== null && days <= 0) return "expired";
     return "trial";
